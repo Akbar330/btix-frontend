@@ -1,16 +1,103 @@
-# React + Vite
+# Tiket Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React + Vite untuk platform pemesanan tiket event.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- Vite
+- Tailwind CSS 4
+- Framer Motion
+- Axios
+- React Router
 
-## React Compiler
+## Fitur
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Home dengan search, filter kategori, sorting, dan upcoming toggle
+- Detail event dengan metadata lengkap
+- Login dan register
+- Checkout tiket
+- Pilih payment method aktif
+- Voucher preview saat checkout
+- Membership page
+- History tiket
+- Receipt dan print ticket
+- Admin dashboard
+- Scanner admin
+- Chatbot UI
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd tiket-frontend
+npm install
+npm run dev
+```
+
+Default frontend jalan di:
+
+```txt
+http://localhost:5173
+```
+
+## Arsitektur API
+
+Frontend memakai path relatif:
+
+```txt
+/api
+```
+
+Saat development, Vite proxy akan meneruskan request ke backend Laravel di:
+
+```txt
+http://localhost:8000
+```
+
+Jadi frontend tidak perlu menyimpan secret key payment atau chatbot.
+
+## Script
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+```
+
+## Struktur Halaman
+
+- `/` home
+- `/login`
+- `/register`
+- `/ticket/:id`
+- `/checkout/:id`
+- `/history`
+- `/membership`
+- `/receipt/:id`
+- `/print/:id`
+- `/admin`
+- `/admin/scanner`
+
+## Catatan Development
+
+- Pastikan backend Laravel sudah jalan sebelum frontend dipakai.
+- File gambar event diambil dari endpoint `/storage/...`.
+- Midtrans Snap script dan daftar payment method diambil dari backend lewat `/api/public-config`.
+
+## Build
+
+```bash
+npm run build
+```
+
+Output production ada di folder:
+
+```txt
+dist/
+```
+
+## Catatan Deploy
+
+- Untuk production paling aman, deploy frontend dan backend di domain/origin yang sama.
+- Reverse proxy seperti Nginx cocok untuk route `/api` dan `/storage`.
