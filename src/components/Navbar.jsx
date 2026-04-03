@@ -81,38 +81,29 @@ export default function Navbar() {
             return (
                 <Link
                     to={to}
-                    className={`relative flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl text-white 
-                        bg-gradient-to-r from-violet-600 to-primary-600 
-                        shadow-lg shadow-primary-500/30
-                        hover:shadow-primary-500/50 hover:scale-[1.03]
+                    className={`relative flex items-center gap-2 px-5 py-2.5 text-base font-bold rounded-lg text-black 
+                        bg-amber-400
+                        hover:bg-amber-500 hover:scale-[1.02]
                         active:scale-[0.98]
                         transition-all duration-200
-                        ${active ? 'ring-2 ring-white/50 ring-offset-1 ring-offset-transparent' : ''}`}
+                        ${active ? 'ring-2 ring-amber-600/30' : ''}`}
                 >
                     {Icon && <Icon />}
                     {label}
-                    {active && <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full border border-white animate-pulse" />}
                 </Link>
             );
         }
         return (
             <Link
                 to={to}
-                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
+                className={`relative flex items-center gap-2 px-5 py-2.5 text-base font-bold rounded-lg transition-all duration-200
                     ${active
-                        ? 'text-primary-600 bg-primary-50 shadow-sm shadow-primary-100'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                        ? 'text-amber-500 bg-gray-900/10'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-700'
                     }`}
             >
                 {Icon && <Icon />}
                 {label}
-                {active && (
-                    <motion.span
-                        layoutId="navbar-pill"
-                        className="absolute inset-0 rounded-xl bg-primary-50 -z-10"
-                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    />
-                )}
             </Link>
         );
     };
@@ -120,11 +111,11 @@ export default function Navbar() {
     return (
         <>
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                ? 'bg-white/85 backdrop-blur-2xl border-b border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.07)]'
-                : 'bg-white/60 backdrop-blur-md border-b border-white/50'
+                ? 'bg-gray-900 border-b border-amber-500/30 shadow-lg'
+                : 'bg-gray-800 border-b border-amber-500/20'
                 }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center h-[60px] gap-2">
+                    <div className="flex items-center h-[90px] gap-3">
 
                         {/* Back Button */}
                         {!isHome && (
@@ -132,7 +123,7 @@ export default function Navbar() {
                                 initial={{ opacity: 0, x: -8 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 onClick={() => navigate(-1)}
-                                className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors shrink-0"
+                                className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white transition-colors shrink-0"
                                 aria-label="Go back"
                             >
                                 <Icons.Back />
@@ -140,32 +131,27 @@ export default function Navbar() {
                         )}
 
                         {/* Logo */}
-                        {/* Logo */}
-                        <Link to="/" className="flex items-center gap-2.5 shrink-0 group mr-2">
-                            <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 via-violet-500 to-indigo-600 flex items-center justify-center text-white font-black text-base shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 group-hover:scale-105 transition-all duration-200">
+                        <Link to="/" className="flex items-center gap-3 shrink-0 group">
+                            <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-black font-black text-lg shadow-lg shadow-amber-500/30 group-hover:shadow-amber-500/50 group-hover:scale-105 transition-all duration-200">
                                 B
-                                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border-[1.5px] border-white" />
+                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-[1.5px] border-white" />
                             </div>
 
-                            {/* FIX DISINI */}
-                            <span className="font-black tracking-tight text-slate-900">
+                            <span className="font-black tracking-tight text-white">
                                 {/* Mobile */}
-                                <span className="sm:hidden text-base">
-                                    BTIX.ID
+                                <span className="sm:hidden text-lg">
+                                    BTIX
                                 </span>
 
                                 {/* Desktop */}
-                                <span className="hidden sm:inline text-lg">
-                                    BANGSA{" "}
-                                    <span className="bg-gradient-to-r from-primary-500 to-violet-500 bg-clip-text text-transparent">
-                                        TIX.ID
-                                    </span>
+                                <span className="hidden sm:inline text-2xl">
+                                    <span className="text-amber-400">BTIX</span> ID
                                 </span>
                             </span>
                         </Link>
 
                         {/* Separator */}
-                        <div className="hidden md:block h-5 w-px bg-slate-200 mx-1" />
+                        <div className="hidden md:block h-5 w-px bg-gray-700 mx-1" />
 
                         {/* Center Nav Links */}
                         <div className="hidden md:flex items-center gap-0.5">
@@ -195,27 +181,27 @@ export default function Navbar() {
                                 <div className="relative">
                                     <button
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 hover:border-slate-300 transition-all duration-200 group"
+                                        className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 border border-gray-600 hover:border-amber-500/50 transition-all duration-200 group"
                                     >
-                                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-400 via-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black uppercase shadow-sm">
+                                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-black text-xs font-black uppercase shadow-sm">
                                             {user.name.charAt(0)}
                                         </div>
                                         <div className="text-left leading-none">
                                             <div className="flex items-center gap-1.5">
-                                                <p className="text-sm font-bold text-slate-900">{user.name.split(' ')[0]}</p>
+                                                <p className="text-sm font-bold text-white">{user.name.split(' ')[0]}</p>
                                                 {membership !== 'basic' && (
                                                     <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full border ${
                                                         membership === 'premium' 
-                                                            ? 'bg-amber-100 text-amber-700 border-amber-200' 
-                                                            : 'bg-indigo-100 text-indigo-700 border-indigo-200'
+                                                            ? 'bg-amber-500/30 text-amber-300 border-amber-500/60' 
+                                                            : 'bg-amber-500/30 text-amber-300 border-amber-500/60'
                                                     }`}>
                                                         {membershipLabel}
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-[10px] text-slate-400 font-medium">Lihat Profil</p>
+                                            <p className="text-[10px] text-gray-400 font-medium">Lihat Profil</p>
                                         </div>
-                                        <span className={`transition-transform duration-200 text-slate-400 ${userMenuOpen ? 'rotate-180' : ''}`}>
+                                        <span className={`transition-transform duration-200 text-gray-400 ${userMenuOpen ? 'rotate-180' : ''}`}>
                                             <Icons.ChevronDown />
                                         </span>
                                     </button>
@@ -227,23 +213,23 @@ export default function Navbar() {
                                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                                 exit={{ opacity: 0, y: 4, scale: 0.97 }}
                                                 transition={{ duration: 0.15 }}
-                                                className="absolute right-0 top-full mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden z-50"
+                                                className="absolute right-0 top-full mt-2 w-52 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50"
                                             >
-                                                <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/40">
-                                                    <p className="text-xs text-slate-400">Logged in as</p>
-                                                    <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                                                <div className="px-4 py-3 border-b border-gray-700 bg-gray-800/50">
+                                                    <p className="text-xs text-gray-500">Logged in as</p>
+                                                    <p className="text-sm font-bold text-white truncate">{user.email}</p>
                                                 </div>
                                                 <div className="p-1.5">
                                                     <Link
                                                         to="/membership"
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors"
+                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-amber-400 rounded-lg transition-colors"
                                                     >
                                                         <Icons.Membership />
                                                         Langganan
                                                     </Link>
                                                     <button
                                                         onClick={handleLogout}
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-red-400 rounded-lg transition-colors"
                                                     >
                                                         <Icons.Logout />
                                                         Keluar
@@ -255,14 +241,14 @@ export default function Navbar() {
                                 </div>
                             ) : (
                                 <>
-                                    <Link to="/login" className="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">
+                                    <Link to="/login" className="px-5 py-2.5 text-base font-semibold text-gray-300 hover:text-white hover:bg-gray-700 rounded-xl transition-colors">
                                         Masuk
                                     </Link>
                                     <Link
                                         to="/register"
-                                        className="px-5 py-2 text-sm font-bold text-white rounded-xl
-                                            bg-gradient-to-r from-primary-500 to-violet-600
-                                            shadow-md shadow-primary-500/25 hover:shadow-primary-500/40
+                                        className="px-6 py-2.5 text-base font-bold text-black rounded-xl
+                                            bg-amber-500 hover:bg-amber-600
+                                            shadow-md shadow-amber-500/25 hover:shadow-amber-500/40
                                             hover:scale-[1.03] active:scale-[0.98]
                                             transition-all duration-200"
                                     >
@@ -274,7 +260,7 @@ export default function Navbar() {
 
                         {/* Mobile hamburger */}
                         <button
-                            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                            className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-gray-700 hover:bg-gray-600 text-gray-300 transition-colors"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             aria-label="Menu"
                         >
@@ -301,7 +287,7 @@ export default function Navbar() {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="md:hidden border-t border-slate-100/80 bg-white/95 backdrop-blur-xl overflow-hidden"
+                            className="md:hidden border-t border-gray-700 bg-gray-800 overflow-hidden"
                         >
                             <div className="px-4 pt-3 pb-4 space-y-1">
                                 {[
@@ -314,11 +300,11 @@ export default function Navbar() {
                                         key={to}
                                         to={to}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-colors ${isActive(to)
-                                            ? 'bg-primary-50 text-primary-700 shadow-sm'
-                                            : 'text-slate-700 hover:bg-slate-50'
+                                            ? 'bg-amber-500/30 text-amber-400 shadow-sm'
+                                            : 'text-gray-400 hover:bg-gray-700 hover:text-gray-200'
                                             }`}
                                     >
-                                        <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${isActive(to) ? 'bg-primary-100 text-primary-600' : 'bg-slate-100 text-slate-500'}`}>
+                                        <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${isActive(to) ? 'bg-amber-500/30 text-amber-400' : 'bg-gray-700 text-gray-400'}`}>
                                             <Icon />
                                         </span>
                                         {label}
@@ -328,7 +314,7 @@ export default function Navbar() {
                                 {user?.role === 'admin' && (
                                     <Link
                                         to="/admin/scanner"
-                                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-primary-600 shadow-md shadow-primary-500/25"
+                                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-black bg-amber-500 shadow-lg shadow-amber-500/25"
                                     >
                                         <span className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                                             <Icons.Scanner />
@@ -337,23 +323,23 @@ export default function Navbar() {
                                     </Link>
                                 )}
 
-                                <div className="pt-3 mt-2 border-t border-slate-100">
+                                <div className="pt-3 mt-2 border-t border-gray-700">
                                     {user ? (
                                         <div className="space-y-2">
-                                            <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-slate-50 to-primary-50/50 rounded-2xl border border-slate-100">
-                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 via-violet-500 to-indigo-600 flex items-center justify-center text-white font-black shadow-sm">
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-gray-700 rounded-2xl border border-gray-600">
+                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-black font-black shadow-sm">
                                                     {user.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-slate-900">{user.name}</p>
-                                                    <p className="text-xs text-slate-500">{user.email}</p>
+                                                    <p className="text-sm font-bold text-white">{user.name}</p>
+                                                    <p className="text-xs text-gray-400">{user.email}</p>
                                                 </div>
                                             </div>
                                             <button
                                                 onClick={handleLogout}
-                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-red-400 hover:bg-red-500/20 transition-colors"
                                             >
-                                                <span className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center">
+                                                <span className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center">
                                                     <Icons.Logout />
                                                 </span>
                                                 Keluar
@@ -361,10 +347,10 @@ export default function Navbar() {
                                         </div>
                                     ) : (
                                         <div className="flex gap-2">
-                                            <Link to="/login" className="flex-1 text-center px-4 py-3 text-sm font-semibold text-slate-700 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors">
+                                            <Link to="/login" className="flex-1 text-center px-4 py-3 text-sm font-semibold text-gray-400 border border-gray-700 rounded-2xl hover:bg-gray-700 transition-colors">
                                                 Masuk
                                             </Link>
-                                            <Link to="/register" className="flex-1 text-center px-4 py-3 text-sm font-bold text-white bg-gradient-to-r from-primary-500 to-violet-600 rounded-2xl shadow-md shadow-primary-500/25 transition-colors">
+                                            <Link to="/register" className="flex-1 text-center px-4 py-3 text-sm font-bold text-black bg-amber-500 rounded-2xl shadow-md shadow-amber-500/25 transition-colors">
                                                 Daftar
                                             </Link>
                                         </div>

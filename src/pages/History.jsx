@@ -23,17 +23,17 @@ export default function History() {
     }, []);
 
     const getStatusBadge = (t) => {
-        if (t.is_scanned) return <span className="px-3 py-1 rounded-full bg-slate-100/80 border border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Sudah Terpakai</span>;
+        if (t.is_scanned) return <span className="px-3 py-1 rounded-full bg-gray-700/80 border border-gray-600 text-gray-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Sudah Terpakai</span>;
 
         switch (t.payment_status) {
             case 'success':
-                return <span className="px-3 py-1 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Success (Ready)</span>;
+                return <span className="px-3 py-1 rounded-full bg-emerald-500/30 border border-emerald-500/60 text-emerald-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Success (Ready)</span>;
             case 'pending':
-                return <span className="px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-700 text-xs font-bold uppercase tracking-wider animate-pulse backdrop-blur-sm shadow-sm">Pending</span>;
+                return <span className="px-3 py-1 rounded-full bg-amber-500/30 border border-amber-500/60 text-amber-300 text-xs font-bold uppercase tracking-wider animate-pulse backdrop-blur-sm shadow-sm">Pending</span>;
             case 'failed':
-                return <span className="px-3 py-1 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Failed / Cancelled</span>;
+                return <span className="px-3 py-1 rounded-full bg-red-500/30 border border-red-500/60 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Failed / Cancelled</span>;
             default:
-                return <span className="px-3 py-1 rounded-full bg-slate-100/80 border border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">{t.payment_status}</span>;
+                return <span className="px-3 py-1 rounded-full bg-gray-700/80 border border-gray-600 text-gray-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">{t.payment_status}</span>;
         }
     };
 
@@ -71,10 +71,10 @@ export default function History() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-gray-900 relative overflow-hidden font-sans">
             {/* Ambient Background Glows */}
-            <div className="absolute top-[10%] -left-[10%] w-[50%] h-[500px] bg-sky-200/40 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob pointer-events-none z-0"></div>
-            <div className="absolute bottom-[20%] -right-[10%] w-[60%] h-[600px] bg-primary-300/30 rounded-full mix-blend-multiply filter blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
+            <div className="absolute top-[10%] -left-[10%] w-[50%] h-[500px] bg-amber-500/10 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob pointer-events-none z-0"></div>
+            <div className="absolute bottom-[20%] -right-[10%] w-[60%] h-[600px] bg-amber-400/5 rounded-full mix-blend-multiply filter blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
 
             <Navbar />
 

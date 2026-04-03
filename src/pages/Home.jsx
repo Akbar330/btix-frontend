@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api, { asArray } from '../utils/api';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const API_BASE = '';
 
@@ -54,36 +55,35 @@ export default function Home() {
     const featuredTickets = tickets.slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-gray-900">
             <Navbar />
 
-            <div className="absolute top-0 -left-[20%] w-[70%] h-[500px] bg-primary-200/40 rounded-full mix-blend-multiply filter blur-[120px] opacity-70 pointer-events-none z-0" />
-            <div className="absolute top-[20%] -right-[10%] w-[50%] h-[600px] bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-[120px] opacity-60 pointer-events-none z-0" />
-
-            <div className="pt-24 pb-20 max-w-7xl mx-auto relative z-10">
-                <section className="px-4 sm:px-6 lg:px-8 mb-10">
-                    <div className="bg-white/70 backdrop-blur-2xl border border-white rounded-[2.5rem] shadow-[0_12px_40px_rgba(15,23,42,0.06)] overflow-hidden">
-                        <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-0">
-                            <div className="p-8 sm:p-10 lg:p-14">
-                                <span className="inline-flex px-4 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-black uppercase tracking-[0.25em] border border-primary-100">
-                                    Event Discovery
-                                </span>
-                                <h1 className="mt-6 text-4xl sm:text-5xl font-display font-black tracking-tight text-slate-900 leading-tight">
-                                    Cari event yang pas, <br />
-                                    beli tiket lebih cepat.
+            <div className="pt-28 pb-20 max-w-7xl mx-auto relative z-10">
+                <section className="px-4 sm:px-6 lg:px-8 mb-12">
+                    <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl overflow-hidden border border-amber-500/20 shadow-xl">
+                        <div className="grid lg:grid-cols-2 gap-0">
+                            <div className="p-8 sm:p-12 lg:p-14">
+                                <div className="inline-flex px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-6">
+                                    <span className="text-amber-500 text-xs font-black uppercase tracking-[0.2em]">
+                                        🎫 Cari Event
+                                    </span>
+                                </div>
+                                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white leading-tight mb-4">
+                                    Temukan Event <br />
+                                    <span className="text-amber-400">Favorit Kamu</span>
                                 </h1>
-                                <p className="mt-5 text-slate-500 text-lg max-w-2xl">
-                                    Sekarang kamu bisa filter event berdasarkan kategori, urutkan harga atau tanggal, dan lihat status event secara langsung sebelum checkout.
+                                <p className="text-gray-300 text-base max-w-xl">
+                                    Cari, filter, dan pesan tiket event impian mu dengan mudah. Dari konser hingga workshop, semua ada di sini.
                                 </p>
 
-                                <div className="mt-8 grid gap-4">
+                                <div className="mt-8 grid gap-3">
                                     <div className="relative">
                                         <input
                                             type="text"
                                             value={filters.search}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                                            placeholder="Cari event, kota, venue, atau organizer..."
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-slate-700 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                            placeholder="Cari event, kota, venue..."
+                                            className="w-full rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -91,7 +91,7 @@ export default function Home() {
                                         <select
                                             value={filters.category}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, category: e.target.value }))}
-                                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                            className="rounded-lg border border-gray-700 bg-gray-800/50 px-3 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         >
                                             <option value="all">Semua kategori</option>
                                             {categories.map((category) => (
@@ -102,7 +102,7 @@ export default function Home() {
                                         <select
                                             value={filters.sort}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, sort: e.target.value }))}
-                                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                            className="rounded-lg border border-gray-700 bg-gray-800/50 px-3 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         >
                                             <option value="event_date_asc">Tanggal terdekat</option>
                                             <option value="price_asc">Harga termurah</option>
@@ -114,36 +114,28 @@ export default function Home() {
                                         <button
                                             type="button"
                                             onClick={() => setFilters((prev) => ({ ...prev, upcomingOnly: !prev.upcomingOnly }))}
-                                            className={`rounded-2xl border px-4 py-3 text-sm font-bold transition-colors ${filters.upcomingOnly
-                                                ? 'border-primary-200 bg-primary-50 text-primary-700'
-                                                : 'border-slate-200 bg-white text-slate-600'
+                                            className={`rounded-lg border px-3 py-3 text-sm font-bold transition-all ${filters.upcomingOnly
+                                                ? 'border-amber-500 bg-amber-500/20 text-amber-400'
+                                                : 'border-gray-700 bg-gray-800/50 text-gray-400'
                                                 }`}
                                         >
-                                            {filters.upcomingOnly ? 'Hanya upcoming' : 'Semua tanggal'}
+                                            {filters.upcomingOnly ? '✓ Upcoming' : 'Semua Tanggal'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 sm:p-10 text-white flex flex-col justify-between">
-                                <div>
-                                    <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">Platform Snapshot</p>
-                                    <div className="mt-8 grid grid-cols-2 gap-4">
-                                        <div className="rounded-3xl bg-white/10 border border-white/10 p-5">
-                                            <p className="text-3xl font-black">{tickets.length}</p>
-                                            <p className="text-sm text-slate-300 mt-1">event tampil</p>
-                                        </div>
-                                        <div className="rounded-3xl bg-white/10 border border-white/10 p-5">
-                                            <p className="text-3xl font-black">{categories.length}</p>
-                                            <p className="text-sm text-slate-300 mt-1">kategori aktif</p>
-                                        </div>
+                            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-8 sm:p-12 border-l border-amber-500/20 hidden lg:flex flex-col justify-center">
+                                <div className="space-y-6">
+                                    <div className="text-center">
+                                        <p className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-2">Total Event</p>
+                                        <p className="text-4xl font-black text-white">{tickets.length}</p>
                                     </div>
-                                </div>
-
-                                <div className="mt-8 rounded-[2rem] bg-white/10 border border-white/10 p-6">
-                                    <p className="text-slate-300 text-sm leading-relaxed">
-                                        Admin sekarang bisa mengatur status event, metode pembayaran, voucher, dan analytics supaya katalog event terasa lebih realistis.
-                                    </p>
+                                    <div className="h-px bg-amber-500/30"></div>
+                                    <div className="text-center">
+                                        <p className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-2">Kategori</p>
+                                        <p className="text-3xl font-black text-amber-400">{categories.length}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -151,11 +143,9 @@ export default function Home() {
                 </section>
 
                 {!loading && featuredTickets.length > 0 && (
-                    <section className="px-4 sm:px-6 lg:px-8 mb-12">
-                        <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-2xl font-display font-black text-slate-900">Sorotan Event</h2>
-                            <p className="text-sm font-medium text-slate-500">Pilihan teratas dari katalog kamu</p>
-                        </div>
+                    <section className="px-4 sm:px-6 lg:px-8 mb-16">
+                        <h2 className="text-3xl font-black text-white mb-2">✨ Event Unggulan</h2>
+                        <p className="text-gray-400 text-sm mb-8">Event-event terbaik yang tidak boleh kamu lewatkan</p>
 
                         <div className="grid lg:grid-cols-3 gap-6">
                             {featuredTickets.map((ticket, index) => (
@@ -164,25 +154,30 @@ export default function Home() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.08 }}
-                                        className="relative min-h-[340px] rounded-[2rem] overflow-hidden shadow-[0_12px_36px_rgba(15,23,42,0.10)]"
+                                        className="relative min-h-[340px] rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-800 to-black border border-amber-500/20 group-hover:border-amber-500/40"
                                     >
                                         {ticket.image ? (
-                                            <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                                         ) : (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-indigo-900" />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900" />
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                                         <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                                             <div className="flex items-center gap-2 mb-3">
-                                                <span className="px-3 py-1 rounded-full bg-white/15 border border-white/15 text-[11px] font-black uppercase tracking-[0.2em]">
+                                                <span className="px-2 py-1 rounded text-xs font-bold uppercase tracking-wide bg-amber-500/30 border border-amber-500/60 text-amber-300">
                                                     {ticket.category || 'General'}
                                                 </span>
-                                                <span className="px-3 py-1 rounded-full bg-white/15 border border-white/15 text-[11px] font-black uppercase tracking-[0.2em]">
+                                                <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wide ${ticket.status === 'sold_out'
+                                                    ? 'bg-red-500/30 border border-red-500/60 text-red-300'
+                                                    : ticket.status === 'ended'
+                                                        ? 'bg-gray-500/30 border border-gray-500/60 text-gray-300'
+                                                        : 'bg-green-500/30 border border-green-500/60 text-green-300'
+                                                    }`}>
                                                     {statusLabel[ticket.status] || ticket.status}
                                                 </span>
                                             </div>
-                                            <h3 className="text-2xl font-display font-black leading-tight">{ticket.title}</h3>
-                                            <p className="text-sm text-slate-200 mt-2 line-clamp-2">{ticket.description}</p>
+                                            <h3 className="text-xl font-black leading-tight">{ticket.title}</h3>
+                                            <p className="text-sm text-gray-300 mt-2 line-clamp-2">{ticket.description}</p>
                                         </div>
                                     </motion.div>
                                 </Link>
@@ -191,20 +186,19 @@ export default function Home() {
                     </section>
                 )}
 
-                <section className="px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+                <section className="px-4 sm:px-6 lg:px-8 mb-16">
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
                         <div>
-                            <h2 className="text-2xl font-display font-black text-slate-900">Semua Event</h2>
-                            <p className="text-slate-500 text-sm mt-1">Menampilkan event yang cocok dengan filter aktif</p>
+                            <h2 className="text-3xl font-black text-gray-900">🎫 Semua Event</h2>
+                            <p className="text-gray-600 text-sm mt-1">{tickets.length} event tersedia sesuai filter</p>
                         </div>
-                        <p className="text-sm font-bold text-slate-500">{tickets.length} event ditemukan</p>
                     </div>
 
                     {loading ? (
                         <div className="flex justify-center py-24">
                             <div className="relative w-14 h-14">
-                                <div className="absolute inset-0 rounded-full border-t-4 border-primary-500 animate-spin" />
-                                <div className="absolute inset-2 rounded-full border-r-4 border-indigo-400 animate-spin" />
+                                <div className="absolute inset-0 rounded-full border-t-4 border-amber-500 animate-spin" />
+                                <div className="absolute inset-2 rounded-full border-r-4 border-amber-400 animate-spin" style={{ animationDirection: 'reverse' }} />
                             </div>
                         </div>
                     ) : tickets.length > 0 ? (
@@ -216,50 +210,50 @@ export default function Home() {
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true, margin: '-40px' }}
                                         transition={{ delay: index * 0.04 }}
-                                        className="bg-white/80 backdrop-blur-xl border border-white rounded-[2rem] overflow-hidden shadow-[0_8px_28px_rgba(15,23,42,0.05)] hover:shadow-[0_16px_40px_rgba(37,99,235,0.12)] hover:-translate-y-1 transition-all duration-300"
+                                        className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:border-amber-500/50 transition-all duration-300"
                                     >
-                                        <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
+                                        <div className="aspect-[4/3] bg-gray-900 relative overflow-hidden">
                                             {ticket.image ? (
-                                                <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                                <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                             ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-100" />
+                                                <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900" />
                                             )}
 
-                                            <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                                                <span className="px-3 py-1 rounded-full bg-white/90 text-[11px] font-black uppercase tracking-[0.18em] text-slate-700">
+                                            <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                                                <span className="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide bg-amber-500 text-black">
                                                     {ticket.category || 'General'}
                                                 </span>
-                                                <span className={`px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-[0.18em] ${ticket.status === 'sold_out'
-                                                    ? 'bg-rose-100 text-rose-700'
+                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${ticket.status === 'sold_out'
+                                                    ? 'bg-red-500/90 text-white'
                                                     : ticket.status === 'ended'
-                                                        ? 'bg-slate-200 text-slate-700'
-                                                        : 'bg-emerald-100 text-emerald-700'
+                                                        ? 'bg-gray-600/90 text-gray-100'
+                                                        : 'bg-green-500/90 text-white'
                                                     }`}>
                                                     {statusLabel[ticket.status] || ticket.status}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <div className="p-5">
-                                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-3">
-                                                <span>{ticket.city || 'Online / TBA'}</span>
-                                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                        <div className="p-4">
+                                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+                                                <span>{ticket.city || 'Online'}</span>
+                                                <span className="w-1 h-1 rounded-full bg-gray-700" />
                                                 <span>{new Date(ticket.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                                             </div>
 
-                                            <h3 className="text-xl font-display font-black text-slate-900 leading-tight group-hover:text-primary-600 transition-colors">
+                                            <h3 className="text-base font-bold text-white leading-tight group-hover:text-amber-400 transition-colors line-clamp-2">
                                                 {ticket.title}
                                             </h3>
-                                            <p className="text-slate-500 text-sm mt-2 line-clamp-2 min-h-[2.5rem]">{ticket.description}</p>
+                                            <p className="text-gray-400 text-xs mt-1 line-clamp-2 min-h-[1.5rem]">{ticket.description}</p>
 
-                                            <div className="mt-5 flex items-end justify-between">
+                                            <div className="mt-4 flex items-end justify-between pt-3 border-t border-gray-700">
                                                 <div>
-                                                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Mulai dari</p>
-                                                    <p className="text-2xl font-display font-black text-slate-900">{formatPrice(ticket.price)}</p>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Dari</p>
+                                                    <p className="text-lg font-black text-white">{formatPrice(ticket.price)}</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-xs text-slate-400 font-bold uppercase tracking-[0.18em]">Kuota</p>
-                                                    <p className="text-sm font-bold text-slate-700">{ticket.quota}</p>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">Slot</p>
+                                                    <p className="text-sm font-bold text-gray-300">{ticket.quota}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -268,13 +262,14 @@ export default function Home() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-white/60 rounded-[2rem] border border-white shadow-sm">
-                            <h3 className="text-2xl font-display font-black text-slate-900">Event belum ketemu</h3>
-                            <p className="text-slate-500 mt-2">Coba ubah pencarian, kategori, atau matikan filter upcoming.</p>
+                        <div className="text-center py-16 bg-gray-800 rounded-lg border border-gray-700">
+                            <h3 className="text-xl font-black text-white">Event tidak ditemukan</h3>
+                            <p className="text-gray-400 text-sm mt-2">Coba ubah filter atau kata kunci pencarian</p>
                         </div>
                     )}
                 </section>
             </div>
+            <Footer />
         </div>
     );
 }

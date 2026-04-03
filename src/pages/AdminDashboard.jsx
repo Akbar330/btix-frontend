@@ -4,7 +4,7 @@ import api, { asArray } from '../utils/api';
 import Navbar from '../components/Navbar';
 
 const API_BASE = '';
-const inputClass = 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500';
+const inputClass = 'w-full rounded-2xl border border-gray-600 bg-gray-800 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500';
 const emptyEvent = { id: '', title: '', category: '', description: '', price: '', quota: '', event_date: '', status: 'draft', venue: '', city: '', organizer: '', highlights: '', terms: '' };
 const emptyVoucher = { code: '', description: '', discount_type: 'percent', value: '', min_purchase: '', max_uses: '', is_active: true };
 
@@ -117,22 +117,22 @@ export default function AdminDashboard() {
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-slate-50"><Navbar /><div className="absolute inset-0 flex items-center justify-center"><div className="w-16 h-16 border-4 border-slate-200 border-t-primary-600 rounded-full animate-spin" /></div></div>;
+        return <div className="min-h-screen bg-gray-900"><Navbar /><div className="absolute inset-0 flex items-center justify-center"><div className="w-16 h-16 border-4 border-gray-700 border-t-amber-500 rounded-full animate-spin" /></div></div>;
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-gray-900 relative overflow-hidden font-sans">
             <Navbar />
-            <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[400px] bg-sky-200/50 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[500px] bg-primary-200/40 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[400px] bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[500px] bg-amber-400/5 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-10">
                     <div>
-                        <h1 className="text-4xl font-display font-black text-slate-900">Admin Terminal</h1>
-                        <p className="text-slate-500 mt-2">Analytics, voucher, status event, dan kontrol pembayaran sekarang jadi satu paket.</p>
+                        <h1 className="text-4xl font-display font-black text-white">Admin Terminal</h1>
+                        <p className="text-gray-400 mt-2">Analytics, voucher, status event, dan kontrol pembayaran sekarang jadi satu paket.</p>
                     </div>
-                    <button onClick={() => openModal()} className="px-6 py-3 rounded-2xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white font-black">Create Event</button>
+                    <button onClick={() => openModal()} className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-black">Create Event</button>
                 </div>
 
                 <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
@@ -146,9 +146,9 @@ export default function AdminDashboard() {
                     <Panel title="Event Performance" subtitle="Event dengan revenue tertinggi">
                         <div className="space-y-3">
                             {(analytics?.sales_by_event || []).map((item) => (
-                                <div key={item.ticket_id} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 flex justify-between gap-4">
-                                    <div><p className="font-black text-slate-900">{item.ticket?.title}</p><p className="text-sm text-slate-500">{item.total_quantity} tiket</p></div>
-                                    <p className="font-black text-slate-900">Rp {Number(item.total_revenue).toLocaleString('id-ID')}</p>
+                                <div key={item.ticket_id} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-4 flex justify-between gap-4">
+                                    <div><p className="font-black text-white">{item.ticket?.title}</p><p className="text-sm text-gray-400">{item.total_quantity} tiket</p></div>
+                                    <p className="font-black text-white">Rp {Number(item.total_revenue).toLocaleString('id-ID')}</p>
                                 </div>
                             ))}
                         </div>
@@ -156,9 +156,9 @@ export default function AdminDashboard() {
                     <Panel title="Payment Methods" subtitle="Aktif/nonaktifkan gateway tertentu">
                         <div className="space-y-3">
                             {paymentMethods.map((method) => (
-                                <div key={method.id} className="rounded-2xl border border-slate-100 bg-white p-4 flex justify-between gap-4">
-                                    <div><p className="font-black text-slate-900">{method.name}</p><p className="text-sm text-slate-500">{method.description}</p></div>
-                                    <button onClick={() => handleTogglePaymentMethod(method)} className={`px-4 py-2 rounded-full text-xs font-black border ${method.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>{method.is_active ? 'Aktif' : 'Nonaktif'}</button>
+                                <div key={method.id} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-4 flex justify-between gap-4">
+                                    <div><p className="font-black text-white">{method.name}</p><p className="text-sm text-gray-400">{method.description}</p></div>
+                                    <button onClick={() => handleTogglePaymentMethod(method)} className={`px-4 py-2 rounded-full text-xs font-black border ${method.is_active ? 'bg-emerald-500/30 text-emerald-400 border-emerald-500/60' : 'bg-gray-700 text-gray-400 border-gray-600'}`}>{method.is_active ? 'Aktif' : 'Nonaktif'}</button>
                                 </div>
                             ))}
                         </div>
@@ -170,21 +170,21 @@ export default function AdminDashboard() {
                         <input value={searchEvent} onChange={(e) => setSearchEvent(e.target.value)} placeholder="Cari event, kota, kategori..." className={`${inputClass} mb-5`} />
                         <div className="space-y-4">
                             {filteredTickets.map((ticket) => (
-                                <div key={ticket.id} className="rounded-[1.75rem] border border-slate-100 bg-white p-5 shadow-sm">
+                                <div key={ticket.id} className="rounded-[1.75rem] border border-gray-700 bg-gray-800/50 p-5 shadow-sm">
                                     <div className="flex flex-col lg:flex-row justify-between gap-4">
                                         <div className="flex gap-4 min-w-0">
-                                            <div className="w-16 h-16 rounded-2xl bg-slate-100 overflow-hidden">{ticket.image ? <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="w-full h-full object-cover" /> : null}</div>
+                                            <div className="w-16 h-16 rounded-2xl bg-gray-700 overflow-hidden">{ticket.image ? <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="w-full h-full object-cover" /> : null}</div>
                                             <div className="min-w-0">
                                                 <div className="flex gap-2 flex-wrap mb-2"><Badge>{ticket.category || 'General'}</Badge><Badge tone={ticket.status === 'sold_out' ? 'rose' : ticket.status === 'draft' ? 'slate' : 'emerald'}>{ticket.status}</Badge></div>
-                                                <p className="text-xl font-display font-black text-slate-900 truncate">{ticket.title}</p>
-                                                <p className="text-sm text-slate-500">{ticket.city || 'TBA'} • {ticket.venue || 'Venue TBA'}</p>
+                                                <p className="text-xl font-display font-black text-white truncate">{ticket.title}</p>
+                                                <p className="text-sm text-gray-400">{ticket.city || 'TBA'} • {ticket.venue || 'Venue TBA'}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3 flex-wrap">
-                                            <span className="font-black text-slate-900">Rp {Number(ticket.price).toLocaleString('id-ID')}</span>
-                                            <span className="text-sm text-slate-500">{ticket.quota} quota</span>
-                                            <button onClick={() => openModal(ticket)} className="px-4 py-2 rounded-xl bg-primary-50 text-primary-700 font-black text-sm">Edit</button>
-                                            <button onClick={() => handleDelete(ticket.id)} className="px-4 py-2 rounded-xl bg-rose-50 text-rose-700 font-black text-sm">Hapus</button>
+                                            <span className="font-black text-white">Rp {Number(ticket.price).toLocaleString('id-ID')}</span>
+                                            <span className="text-sm text-gray-400">{ticket.quota} quota</span>
+                                            <button onClick={() => openModal(ticket)} className="px-4 py-2 rounded-xl bg-amber-500/30 text-amber-300 font-black text-sm border border-amber-500/60">Edit</button>
+                                            <button onClick={() => handleDelete(ticket.id)} className="px-4 py-2 rounded-xl bg-red-500/30 text-red-400 font-black text-sm border border-red-500/60">Hapus</button>
                                         </div>
                                     </div>
                                 </div>
@@ -205,16 +205,16 @@ export default function AdminDashboard() {
                                     <input type="number" min="0" value={voucherData.min_purchase} onChange={(e) => setVoucherData((prev) => ({ ...prev, min_purchase: e.target.value }))} placeholder="Min purchase" className={inputClass} />
                                     <input type="number" min="1" value={voucherData.max_uses} onChange={(e) => setVoucherData((prev) => ({ ...prev, max_uses: e.target.value }))} placeholder="Max uses" className={inputClass} />
                                 </div>
-                                <label className="inline-flex items-center gap-3 text-sm font-bold text-slate-700"><input type="checkbox" checked={voucherData.is_active} onChange={(e) => setVoucherData((prev) => ({ ...prev, is_active: e.target.checked }))} />Active sekarang</label>
-                                <button type="submit" disabled={voucherSaving} className="w-full rounded-2xl bg-slate-900 text-white py-3 font-black">{voucherSaving ? 'Saving...' : 'Simpan Voucher'}</button>
+                                <label className="inline-flex items-center gap-3 text-sm font-bold text-white"><input type="checkbox" checked={voucherData.is_active} onChange={(e) => setVoucherData((prev) => ({ ...prev, is_active: e.target.checked }))} />Active sekarang</label>
+                                <button type="submit" disabled={voucherSaving} className="w-full rounded-2xl bg-amber-500 text-black py-3 font-black">{voucherSaving ? 'Saving...' : 'Simpan Voucher'}</button>
                             </form>
                         </Panel>
                         <Panel title="Voucher Library" subtitle="Promo yang sudah dibuat">
                             <div className="space-y-3">
                                 {vouchers.map((voucher) => (
-                                    <div key={voucher.id} className="rounded-2xl border border-slate-100 bg-white p-4">
-                                        <div className="flex justify-between gap-3"><div><p className="font-black text-slate-900">{voucher.code}</p><p className="text-sm text-slate-500">{voucher.description}</p></div><Badge tone={voucher.is_active ? 'emerald' : 'slate'}>{voucher.is_active ? 'active' : 'inactive'}</Badge></div>
-                                        <p className="mt-3 text-sm text-slate-600">Used: <span className="font-black">{voucher.used_count}</span></p>
+                                    <div key={voucher.id} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-4">
+                                        <div className="flex justify-between gap-3"><div><p className="font-black text-white">{voucher.code}</p><p className="text-sm text-gray-400">{voucher.description}</p></div><Badge tone={voucher.is_active ? 'emerald' : 'slate'}>{voucher.is_active ? 'active' : 'inactive'}</Badge></div>
+                                        <p className="mt-3 text-sm text-gray-400">Used: <span className="font-black">{voucher.used_count}</span></p>
                                     </div>
                                 ))}
                             </div>
@@ -225,13 +225,13 @@ export default function AdminDashboard() {
                 <Panel title="Recent Transactions" subtitle="Pantau pembayaran terbaru">
                     <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {transactions.slice(0, 6).map((tx) => (
-                            <div key={tx.id} className="rounded-2xl border border-slate-100 bg-white p-4">
+                            <div key={tx.id} className="rounded-2xl border border-gray-700 bg-gray-800/50 p-4">
                                 <div className="flex justify-between gap-3">
-                                    <div><p className="font-black text-slate-900">{tx.user?.name}</p><p className="text-sm text-slate-500">{tx.ticket?.title}</p></div>
+                                    <div><p className="font-black text-white">{tx.user?.name}</p><p className="text-sm text-gray-400">{tx.ticket?.title}</p></div>
                                     <Badge tone={tx.payment_status === 'success' ? 'emerald' : tx.payment_status === 'pending' ? 'amber' : 'rose'}>{tx.payment_status}</Badge>
                                 </div>
-                                <p className="mt-3 text-sm text-slate-500 uppercase tracking-[0.2em]">{tx.payment_method_code || 'midtrans'}</p>
-                                <p className="mt-1 font-black text-slate-900">Rp {Number(tx.total_price).toLocaleString('id-ID')}</p>
+                                <p className="mt-3 text-sm text-gray-400 uppercase tracking-[0.2em]">{tx.payment_method_code || 'midtrans'}</p>
+                                <p className="mt-1 font-black text-white">Rp {Number(tx.total_price).toLocaleString('id-ID')}</p>
                             </div>
                         ))}
                     </div>
@@ -240,11 +240,11 @@ export default function AdminDashboard() {
 
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <motion.div initial={{ opacity: 0, scale: 0.96, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl">
+                    <div className="fixed inset-0 bg-gray-950/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+                    <motion.div initial={{ opacity: 0, scale: 0.96, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-gray-800 border border-gray-700 p-8 shadow-2xl">
                         <form onSubmit={handleSaveTicket} className="space-y-4">
-                            <h2 className="text-3xl font-display font-black text-slate-900">{editMode ? 'Edit Event' : 'Create Event'}</h2>
-                            <div onClick={() => fileInputRef.current?.click()} className="rounded-[1.75rem] border-2 border-dashed border-slate-200 bg-slate-50 cursor-pointer overflow-hidden">{imagePreview ? <img src={imagePreview} alt="Preview" className="w-full h-52 object-cover" /> : <div className="h-52 flex items-center justify-center text-slate-400 font-bold">Klik untuk upload gambar</div>}</div>
+                            <h2 className="text-3xl font-display font-black text-white">{editMode ? 'Edit Event' : 'Create Event'}</h2>
+                            <div onClick={() => fileInputRef.current?.click()} className="rounded-[1.75rem] border-2 border-dashed border-gray-600 bg-gray-900 cursor-pointer overflow-hidden">{imagePreview ? <img src={imagePreview} alt="Preview" className="w-full h-52 object-cover" /> : <div className="h-52 flex items-center justify-center text-gray-400 font-bold">Klik untuk upload gambar</div>}</div>
                             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) { setImageFile(file); setImagePreview(URL.createObjectURL(file)); } }} />
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <input value={formData.title} onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))} placeholder="Title" className={inputClass} required />
@@ -267,8 +267,8 @@ export default function AdminDashboard() {
                             <textarea value={formData.highlights} onChange={(e) => setFormData((prev) => ({ ...prev, highlights: e.target.value }))} placeholder="Highlights (satu per baris)" className={`${inputClass} min-h-[90px]`} />
                             <textarea value={formData.terms} onChange={(e) => setFormData((prev) => ({ ...prev, terms: e.target.value }))} placeholder="Terms (satu per baris)" className={`${inputClass} min-h-[90px]`} />
                             <div className="flex flex-col-reverse sm:flex-row gap-3">
-                                <button type="button" onClick={() => setShowModal(false)} className="rounded-2xl border border-slate-200 px-5 py-3 font-black text-slate-700">Cancel</button>
-                                <button type="submit" disabled={saving} className="rounded-2xl bg-gradient-to-r from-primary-600 to-indigo-600 text-white px-6 py-3 font-black">{saving ? 'Saving...' : editMode ? 'Save Changes' : 'Publish Event'}</button>
+                                <button type="button" onClick={() => setShowModal(false)} className="rounded-2xl border border-gray-600 px-5 py-3 font-black text-gray-300">Cancel</button>
+                                <button type="submit" disabled={saving} className="rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black px-6 py-3 font-black">{saving ? 'Saving...' : editMode ? 'Save Changes' : 'Publish Event'}</button>
                             </div>
                         </form>
                     </motion.div>
@@ -279,14 +279,14 @@ export default function AdminDashboard() {
 }
 
 function Stat({ label, value }) {
-    return <div className="bg-white/75 backdrop-blur-2xl border border-white rounded-[2rem] p-6 shadow-[0_10px_30px_rgba(15,23,42,0.04)]"><p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">{label}</p><p className="mt-3 text-3xl font-display font-black text-slate-900">{value}</p></div>;
+    return <div className="bg-gray-800/75 backdrop-blur-2xl border border-gray-700 rounded-[2rem] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"><p className="text-xs font-black uppercase tracking-[0.22em] text-gray-400">{label}</p><p className="mt-3 text-3xl font-display font-black text-white">{value}</p></div>;
 }
 
 function Panel({ title, subtitle, children }) {
-    return <div className="bg-white/75 backdrop-blur-2xl border border-white rounded-[2.5rem] p-6 sm:p-8 shadow-[0_12px_36px_rgba(15,23,42,0.05)]"><h2 className="text-2xl font-display font-black text-slate-900">{title}</h2><p className="text-slate-500 text-sm mt-2 mb-6">{subtitle}</p>{children}</div>;
+    return <div className="bg-gray-800/75 backdrop-blur-2xl border border-gray-700 rounded-[2.5rem] p-6 sm:p-8 shadow-[0_12px_36px_rgba(0,0,0,0.3)]"><h2 className="text-2xl font-display font-black text-white">{title}</h2><p className="text-gray-400 text-sm mt-2 mb-6">{subtitle}</p>{children}</div>;
 }
 
 function Badge({ children, tone = 'primary' }) {
-    const tones = { primary: 'bg-primary-50 text-primary-700 border-primary-100', emerald: 'bg-emerald-50 text-emerald-700 border-emerald-100', rose: 'bg-rose-50 text-rose-700 border-rose-100', amber: 'bg-amber-50 text-amber-700 border-amber-100', slate: 'bg-slate-100 text-slate-700 border-slate-200' };
+    const tones = { primary: 'bg-amber-500/30 text-amber-300 border-amber-500/60', emerald: 'bg-emerald-500/30 text-emerald-400 border-emerald-500/60', rose: 'bg-red-500/30 text-red-400 border-red-500/60', amber: 'bg-amber-500/30 text-amber-300 border-amber-500/60', slate: 'bg-gray-700 text-gray-400 border-gray-600' };
     return <span className={`inline-flex px-3 py-1 rounded-full border text-xs font-black uppercase tracking-[0.18em] ${tones[tone] || tones.primary}`}>{children}</span>;
 }
