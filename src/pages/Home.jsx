@@ -55,24 +55,24 @@ export default function Home() {
     const featuredTickets = tickets.slice(0, 3);
 
     return (
-        <div className="min-h-screen bg-gray-900">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
             <Navbar />
 
             <div className="pt-28 pb-20 max-w-7xl mx-auto relative z-10">
                 <section className="px-4 sm:px-6 lg:px-8 mb-12">
-                    <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl overflow-hidden border border-amber-500/20 shadow-xl">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                         <div className="grid lg:grid-cols-2 gap-0">
                             <div className="p-8 sm:p-12 lg:p-14">
-                                <div className="inline-flex px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-6">
-                                    <span className="text-amber-500 text-xs font-black uppercase tracking-[0.2em]">
-                                        🎫 Cari Event
+                                <div className="inline-flex px-4 py-2 rounded-lg bg-blue-50 border border-blue-200 mb-6">
+                                    <span className="text-blue-700 text-xs font-black uppercase tracking-[0.2em]">
+                                        Cari Event
                                     </span>
                                 </div>
-                                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white leading-tight mb-4">
+                                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight mb-4">
                                     Temukan Event <br />
-                                    <span className="text-amber-400">Favorit Kamu</span>
+                                    <span className="text-blue-600">Favorit Kamu</span>
                                 </h1>
-                                <p className="text-gray-300 text-base max-w-xl">
+                                <p className="text-slate-600 text-base max-w-xl">
                                     Cari, filter, dan pesan tiket event impian mu dengan mudah. Dari konser hingga workshop, semua ada di sini.
                                 </p>
 
@@ -83,7 +83,7 @@ export default function Home() {
                                             value={filters.search}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
                                             placeholder="Cari event, kota, venue..."
-                                            className="w-full rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                            className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
 
@@ -91,7 +91,7 @@ export default function Home() {
                                         <select
                                             value={filters.category}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, category: e.target.value }))}
-                                            className="rounded-lg border border-gray-700 bg-gray-800/50 px-3 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                            className="rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             <option value="all">Semua kategori</option>
                                             {categories.map((category) => (
@@ -102,7 +102,7 @@ export default function Home() {
                                         <select
                                             value={filters.sort}
                                             onChange={(e) => setFilters((prev) => ({ ...prev, sort: e.target.value }))}
-                                            className="rounded-lg border border-gray-700 bg-gray-800/50 px-3 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                            className="rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             <option value="event_date_asc">Tanggal terdekat</option>
                                             <option value="price_asc">Harga termurah</option>
@@ -115,26 +115,26 @@ export default function Home() {
                                             type="button"
                                             onClick={() => setFilters((prev) => ({ ...prev, upcomingOnly: !prev.upcomingOnly }))}
                                             className={`rounded-lg border px-3 py-3 text-sm font-bold transition-all ${filters.upcomingOnly
-                                                ? 'border-amber-500 bg-amber-500/20 text-amber-400'
-                                                : 'border-gray-700 bg-gray-800/50 text-gray-400'
+                                                ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                                : 'border-slate-200 bg-white text-slate-500'
                                                 }`}
                                         >
-                                            {filters.upcomingOnly ? '✓ Upcoming' : 'Semua Tanggal'}
+                                            {filters.upcomingOnly ? 'Upcoming' : 'Semua Tanggal'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-8 sm:p-12 border-l border-amber-500/20 hidden lg:flex flex-col justify-center">
+                            <div className="bg-gradient-to-br from-blue-50 to-white p-8 sm:p-12 border-l border-slate-200 hidden lg:flex flex-col justify-center">
                                 <div className="space-y-6">
                                     <div className="text-center">
-                                        <p className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-2">Total Event</p>
-                                        <p className="text-4xl font-black text-white">{tickets.length}</p>
+                                        <p className="text-slate-500 text-xs uppercase tracking-wider font-bold mb-2">Total Event</p>
+                                        <p className="text-4xl font-black text-slate-900">{tickets.length}</p>
                                     </div>
-                                    <div className="h-px bg-amber-500/30"></div>
+                                    <div className="h-px bg-blue-200"></div>
                                     <div className="text-center">
-                                        <p className="text-gray-400 text-xs uppercase tracking-wider font-bold mb-2">Kategori</p>
-                                        <p className="text-3xl font-black text-amber-400">{categories.length}</p>
+                                        <p className="text-slate-500 text-xs uppercase tracking-wider font-bold mb-2">Kategori</p>
+                                        <p className="text-3xl font-black text-blue-600">{categories.length}</p>
                                     </div>
                                 </div>
                             </div>
@@ -144,30 +144,30 @@ export default function Home() {
 
                 {!loading && featuredTickets.length > 0 && (
                     <section className="px-4 sm:px-6 lg:px-8 mb-16">
-                        <h2 className="text-3xl font-black text-white mb-2">✨ Event Unggulan</h2>
-                        <p className="text-gray-400 text-sm mb-8">Event-event terbaik yang tidak boleh kamu lewatkan</p>
+                        <h2 className="text-3xl font-black text-slate-900 mb-2">Event Unggulan</h2>
+                        <p className="text-slate-500 text-sm mb-8">Event-event terbaik yang tidak boleh kamu lewatkan</p>
 
-                        <div className="grid lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                             {featuredTickets.map((ticket, index) => (
                                 <Link to={`/ticket/${ticket.id}`} key={ticket.id} className="group">
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.08 }}
-                                        className="relative min-h-[340px] rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-800 to-black border border-amber-500/20 group-hover:border-amber-500/40"
+                                        className="relative min-h-[260px] sm:min-h-[340px] rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-slate-300 to-slate-600 border border-slate-200 group-hover:border-blue-300"
                                     >
                                         {ticket.image ? (
-                                            <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                                            <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-opacity duration-300" />
                                         ) : (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900" />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-500" />
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                                        <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <span className="px-2 py-1 rounded text-xs font-bold uppercase tracking-wide bg-amber-500/30 border border-amber-500/60 text-amber-300">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/40 to-transparent" />
+                                        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white">
+                                            <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                                                <span className="px-2 py-1 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-blue-500/30 border border-blue-400/60 text-blue-100">
                                                     {ticket.category || 'General'}
                                                 </span>
-                                                <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wide ${ticket.status === 'sold_out'
+                                                <span className={`px-2 py-1 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wide ${ticket.status === 'sold_out'
                                                     ? 'bg-red-500/30 border border-red-500/60 text-red-300'
                                                     : ticket.status === 'ended'
                                                         ? 'bg-gray-500/30 border border-gray-500/60 text-gray-300'
@@ -176,8 +176,8 @@ export default function Home() {
                                                     {statusLabel[ticket.status] || ticket.status}
                                                 </span>
                                             </div>
-                                            <h3 className="text-xl font-black leading-tight">{ticket.title}</h3>
-                                            <p className="text-sm text-gray-300 mt-2 line-clamp-2">{ticket.description}</p>
+                                            <h3 className="text-sm sm:text-xl font-black leading-tight line-clamp-2">{ticket.title}</h3>
+                                            <p className="hidden sm:block text-sm text-slate-200 mt-2 line-clamp-2">{ticket.description}</p>
                                         </div>
                                     </motion.div>
                                 </Link>
@@ -189,20 +189,20 @@ export default function Home() {
                 <section className="px-4 sm:px-6 lg:px-8 mb-16">
                     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900">🎫 Semua Event</h2>
-                            <p className="text-gray-600 text-sm mt-1">{tickets.length} event tersedia sesuai filter</p>
+                            <h2 className="text-3xl font-black text-slate-900">Semua Event</h2>
+                            <p className="text-slate-600 text-sm mt-1">{tickets.length} event tersedia sesuai filter</p>
                         </div>
                     </div>
 
                     {loading ? (
                         <div className="flex justify-center py-24">
                             <div className="relative w-14 h-14">
-                                <div className="absolute inset-0 rounded-full border-t-4 border-amber-500 animate-spin" />
-                                <div className="absolute inset-2 rounded-full border-r-4 border-amber-400 animate-spin" style={{ animationDirection: 'reverse' }} />
+                                <div className="absolute inset-0 rounded-full border-t-4 border-blue-500 animate-spin" />
+                                <div className="absolute inset-2 rounded-full border-r-4 border-blue-300 animate-spin" style={{ animationDirection: 'reverse' }} />
                             </div>
                         </div>
                     ) : tickets.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
                             {tickets.map((ticket, index) => (
                                 <Link to={`/ticket/${ticket.id}`} key={ticket.id} className="group">
                                     <motion.article
@@ -210,17 +210,17 @@ export default function Home() {
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true, margin: '-40px' }}
                                         transition={{ delay: index * 0.04 }}
-                                        className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:border-amber-500/50 transition-all duration-300"
+                                        className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300"
                                     >
-                                        <div className="aspect-[4/3] bg-gray-900 relative overflow-hidden">
+                                        <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
                                             {ticket.image ? (
                                                 <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                                             ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900" />
+                                                <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300" />
                                             )}
 
                                             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                                                <span className="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide bg-amber-500 text-black">
+                                                <span className="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide bg-blue-600 text-white">
                                                     {ticket.category || 'General'}
                                                 </span>
                                                 <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${ticket.status === 'sold_out'
@@ -234,26 +234,26 @@ export default function Home() {
                                             </div>
                                         </div>
 
-                                        <div className="p-4">
-                                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+                                        <div className="p-3 sm:p-4">
+                                            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">
                                                 <span>{ticket.city || 'Online'}</span>
-                                                <span className="w-1 h-1 rounded-full bg-gray-700" />
+                                                <span className="w-1 h-1 rounded-full bg-slate-400" />
                                                 <span>{new Date(ticket.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                                             </div>
 
-                                            <h3 className="text-base font-bold text-white leading-tight group-hover:text-amber-400 transition-colors line-clamp-2">
+                                            <h3 className="text-sm sm:text-base font-bold text-slate-800 leading-tight group-hover:text-blue-700 transition-colors line-clamp-2">
                                                 {ticket.title}
                                             </h3>
-                                            <p className="text-gray-400 text-xs mt-1 line-clamp-2 min-h-[1.5rem]">{ticket.description}</p>
+                                            <p className="text-slate-500 text-xs mt-1 line-clamp-2 min-h-[1.5rem]">{ticket.description}</p>
 
-                                            <div className="mt-4 flex items-end justify-between pt-3 border-t border-gray-700">
+                                            <div className="mt-3 sm:mt-4 flex items-end justify-between pt-3 border-t border-slate-200">
                                                 <div>
-                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Dari</p>
-                                                    <p className="text-lg font-black text-white">{formatPrice(ticket.price)}</p>
+                                                    <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide">Dari</p>
+                                                    <p className="text-sm sm:text-lg font-black text-slate-900">{formatPrice(ticket.price)}</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wide">Slot</p>
-                                                    <p className="text-sm font-bold text-gray-300">{ticket.quota}</p>
+                                                    <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wide">Slot</p>
+                                                    <p className="text-xs sm:text-sm font-bold text-slate-700">{ticket.quota}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -262,9 +262,9 @@ export default function Home() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-16 bg-gray-800 rounded-lg border border-gray-700">
-                            <h3 className="text-xl font-black text-white">Event tidak ditemukan</h3>
-                            <p className="text-gray-400 text-sm mt-2">Coba ubah filter atau kata kunci pencarian</p>
+                        <div className="text-center py-16 bg-white rounded-lg border border-slate-200">
+                            <h3 className="text-xl font-black text-slate-900">Event tidak ditemukan</h3>
+                            <p className="text-slate-500 text-sm mt-2">Coba ubah filter atau kata kunci pencarian</p>
                         </div>
                     )}
                 </section>
@@ -273,3 +273,4 @@ export default function Home() {
         </div>
     );
 }
+

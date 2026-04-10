@@ -68,7 +68,7 @@ export default function TicketDetail() {
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center">
                     <h2 className="text-3xl font-display font-black text-slate-900">Event tidak ditemukan</h2>
-                    <Link to="/" className="mt-4 px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold">Kembali ke beranda</Link>
+                    <Link to="/" className="mt-4 px-6 py-3 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">Kembali ke beranda</Link>
                 </div>
             </div>
         );
@@ -100,7 +100,7 @@ export default function TicketDetail() {
                             {ticket.image ? (
                                 <img src={`${API_BASE}/storage/${ticket.image}`} alt={ticket.title} className="absolute inset-0 w-full h-full object-cover" />
                             ) : (
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-indigo-900" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-700" />
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
                             <div className="absolute top-5 left-5 flex flex-wrap gap-2">
@@ -164,19 +164,19 @@ export default function TicketDetail() {
                             </div>
                         </div>
 
-                        <div className="bg-slate-950 text-white rounded-[2.5rem] p-8 shadow-[0_18px_45px_rgba(15,23,42,0.20)]">
-                            <h2 className="text-2xl font-display font-black">Syarat & Ketentuan</h2>
+                        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm">
+                            <h2 className="text-2xl font-display font-black text-slate-900">Syarat & Ketentuan</h2>
                             {terms.length > 0 ? (
-                                <ul className="mt-5 space-y-3 text-slate-300">
+                                <ul className="mt-5 space-y-3 text-slate-600">
                                     {terms.map((item, index) => (
                                         <li key={index} className="flex gap-3">
-                                            <span className="text-primary-400 font-black">{String(index + 1).padStart(2, '0')}</span>
+                                            <span className="text-blue-600 font-black">{String(index + 1).padStart(2, '0')}</span>
                                             <span>{item}</span>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="mt-4 text-slate-300">
+                                <p className="mt-4 text-slate-600">
                                     Tiket yang sudah dibeli mengikuti kebijakan penyelenggara event. Simpan bukti pembelian dan e-ticket untuk proses check-in.
                                 </p>
                             )}

@@ -231,7 +231,7 @@ export default function Checkout() {
                                         type="button"
                                         onClick={handlePreviewVoucher}
                                         disabled={voucherLoading}
-                                        className="rounded-2xl bg-slate-900 text-white px-5 py-3 text-sm font-black hover:bg-slate-800 disabled:opacity-60"
+                                        className="rounded-2xl bg-blue-600 text-white px-5 py-3 text-sm font-black hover:bg-blue-700 disabled:opacity-60"
                                     >
                                         {voucherLoading ? 'Checking...' : 'Apply'}
                                     </button>
@@ -283,9 +283,9 @@ export default function Checkout() {
                         initial={{ opacity: 0, y: 22 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.08 }}
-                        className="bg-slate-950 text-white rounded-[2.5rem] p-8 sm:p-10 shadow-[0_22px_52px_rgba(15,23,42,0.22)] h-fit"
+                        className="bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-10 shadow-sm h-fit"
                     >
-                        <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-400">Ringkasan</p>
+                        <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Ringkasan</p>
                         <div className="mt-8 space-y-4 text-sm">
                             <Row label={`Subtotal (${quantity} tiket)`} value={pricing.subtotal} />
                             {pricing.membershipDiscount > 0 && (
@@ -294,14 +294,14 @@ export default function Checkout() {
                             {pricing.voucherDiscount > 0 && (
                                 <Row label={`Voucher ${voucherPreview?.voucher?.code}`} value={-pricing.voucherDiscount} highlight />
                             )}
-                            <div className="flex justify-between text-slate-300">
+                            <div className="flex justify-between text-slate-600">
                                 <span>Service fee</span>
-                                <span className="font-black text-primary-300">Free</span>
+                                <span className="font-black text-blue-600">Free</span>
                             </div>
-                            <div className="border-t border-white/10 pt-5 flex items-end justify-between">
+                            <div className="border-t border-slate-200 pt-5 flex items-end justify-between">
                                 <div>
                                     <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Total bayar</p>
-                                    <p className="mt-2 text-4xl font-display font-black text-white">Rp {Math.floor(pricing.total).toLocaleString('id-ID')}</p>
+                                    <p className="mt-2 text-4xl font-display font-black text-slate-900">Rp {Math.floor(pricing.total).toLocaleString('id-ID')}</p>
                                 </div>
                             </div>
                         </div>
@@ -314,7 +314,7 @@ export default function Checkout() {
                             {processing ? 'Memproses pembayaran...' : 'Bayar Sekarang'}
                         </button>
 
-                        <p className="mt-4 text-xs text-slate-400 leading-relaxed">
+                        <p className="mt-4 text-xs text-slate-500 leading-relaxed">
                             Voucher, membership discount, dan metode pembayaran aktif akan divalidasi ulang di backend sebelum Snap Midtrans dibuka.
                         </p>
                     </motion.aside>
@@ -328,7 +328,7 @@ function Row({ label, value, highlight = false }) {
     const isNegative = Number(value) < 0;
 
     return (
-        <div className={`flex justify-between ${highlight ? 'text-emerald-300' : 'text-slate-300'}`}>
+        <div className={`flex justify-between ${highlight ? 'text-emerald-700' : 'text-slate-600'}`}>
             <span>{label}</span>
             <span className="font-black">
                 {isNegative ? '- ' : ''}Rp {Math.floor(Math.abs(Number(value))).toLocaleString('id-ID')}

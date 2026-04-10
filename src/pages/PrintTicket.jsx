@@ -47,7 +47,7 @@ export default function PrintTicket() {
             {/* The non-printable header for users viewing this page without printing */}
             <div className="max-w-3xl w-full mb-8 flex justify-between items-center print:hidden">
                 <button onClick={() => navigate('/history')} className="text-primary-600 font-bold hover:underline">&larr; Back to History</button>
-                <button onClick={() => window.print()} className="px-6 py-2 bg-slate-900 text-white rounded-lg font-bold shadow-md">Print Output</button>
+                <button onClick={() => window.print()} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold shadow-md hover:bg-blue-700 transition-colors">Print Output</button>
             </div>
 
             {/* The actual Printable Ticket */}
@@ -125,3 +125,4 @@ export default function PrintTicket() {
         </div>
     );
 }
+

@@ -92,7 +92,7 @@ export default function Scanner() {
                                     </div>
                                 </div>
                             )}
-                            <button onClick={resetScanner} className="mt-8 px-6 py-3.5 w-full bg-slate-900 hover:bg-primary-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-primary-600/30 hover:-translate-y-1 transition-all">
+                            <button onClick={resetScanner} className="mt-8 px-6 py-3.5 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-blue-600/30 hover:-translate-y-1 transition-all">
                                 Scan Another Pass
                             </button>
                         </motion.div>
@@ -111,8 +111,8 @@ export default function Scanner() {
                     #reader__dashboard_section_csr span { display: none !important; }
                     #reader__dashboard_section_swaplink { display: none !important; }
                     #reader__camera_selection { padding: 8px; border-radius: 8px; border-color: #cbd5e1; margin-bottom: 15px; width: 100%; outline: none; }
-                    #reader button { background: #0f172a; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin: 4px; }
-                    #reader button:hover { background: #334155; }
+                    #reader button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin: 4px; }
+                    #reader button:hover { background: #1d4ed8; }
                     #reader__scan_region { background: white; margin-top: 15px; border-radius: 16px; overflow: hidden; }
                     #reader__scan_region video { object-fit: cover !important; }
                 `}} />

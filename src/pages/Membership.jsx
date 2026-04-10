@@ -40,10 +40,10 @@ export default function Membership() {
             discount: '0%',
             features: [
                 'Akses semua event',
-                'E-Ticket Digital',
-                'Riwayat Transaksi',
+                'E-Ticket digital',
+                'Riwayat transaksi',
             ],
-            color: 'from-slate-400 to-slate-500',
+            color: 'from-slate-500 to-slate-600',
             buttonText: 'Current Plan',
         },
         {
@@ -54,11 +54,11 @@ export default function Membership() {
             discount: '15%',
             features: [
                 'Diskon 15% semua tiket',
-                'Customer Support Priotitas',
-                'Badge Regular di Profil',
-                'Akses Presale Khusus',
+                'Customer support prioritas',
+                'Badge regular di profil',
+                'Akses presale khusus',
             ],
-            color: 'from-indigo-500 to-violet-600',
+            color: 'from-blue-500 to-indigo-600',
             buttonText: 'Upgrade ke Regular',
             popular: false,
         },
@@ -70,12 +70,12 @@ export default function Membership() {
             discount: '30%',
             features: [
                 'Diskon 30% semua tiket',
-                'Bebas Biaya Admin',
-                'Badge Premium Gold',
-                'Eksklusif Meet & Greet',
-                'Refund Instan',
+                'Bebas biaya admin',
+                'Badge premium gold',
+                'Eksklusif meet and greet',
+                'Refund instan',
             ],
-            color: 'from-amber-400 to-orange-600',
+            color: 'from-sky-500 to-blue-700',
             buttonText: 'Upgrade ke Premium',
             popular: true,
         },
@@ -87,10 +87,10 @@ export default function Membership() {
             setMessage({ type: 'error', text: 'Pilih metode pembayaran terlebih dahulu.' });
             return;
         }
-        
+
         setLoading(tierId);
         setMessage('');
-        
+
         try {
             const response = await api.post('/membership/upgrade', {
                 membership: tierId,
@@ -100,7 +100,7 @@ export default function Membership() {
 
             if (window.snap) {
                 window.snap.pay(snap_token, {
-                    onSuccess: async function (result) {
+                    onSuccess: async function () {
                         try {
                             const confirmRes = await api.post('/membership/confirm', { membership: tierId });
                             setMessage({ type: 'success', text: confirmRes.data.message });
@@ -109,10 +109,10 @@ export default function Membership() {
                             setMessage({ type: 'error', text: 'Gagal mengaktifkan membership. Hubungi support.' });
                         }
                     },
-                    onPending: function (result) {
+                    onPending: function () {
                         setMessage({ type: 'info', text: 'Menunggu pembayaran membership Anda.' });
                     },
-                    onError: function (result) {
+                    onError: function () {
                         setMessage({ type: 'error', text: 'Pembayaran gagal. Silakan coba lagi.' });
                     },
                     onClose: function () {
@@ -128,13 +128,12 @@ export default function Membership() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100 relative overflow-hidden font-sans">
             <Navbar />
 
-            {/* Background Decorations */}
-            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-amber-500/10 to-transparent -z-10" />
-            <div className="absolute top-40 -left-20 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] -z-10 animate-pulse" />
-            <div className="absolute bottom-40 -right-20 w-96 h-96 bg-amber-400/5 rounded-full blur-[120px] -z-10 animate-delay-1000" />
+            <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-200/35 to-transparent -z-10" />
+            <div className="absolute top-40 -left-20 w-80 h-80 bg-blue-200/35 rounded-full blur-[100px] -z-10 animate-pulse" />
+            <div className="absolute bottom-40 -right-20 w-96 h-96 bg-sky-100/50 rounded-full blur-[120px] -z-10" />
 
             <div className="pt-32 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center max-w-3xl mx-auto mb-16">
@@ -142,14 +141,14 @@ export default function Membership() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <span className="inline-block px-4 py-1.5 mb-4 text-xs font-black tracking-widest text-amber-400 uppercase bg-amber-500/20 rounded-full border border-amber-500/30">
+                        <span className="inline-block px-4 py-1.5 mb-4 text-xs font-black tracking-widest text-blue-700 uppercase bg-blue-100 rounded-full border border-blue-200">
                             Membership Plans
                         </span>
-                        <h1 className="text-4xl sm:text-5xl font-display font-black text-white mb-6 leading-tight">
+                        <h1 className="text-4xl sm:text-5xl font-display font-black text-slate-900 mb-6 leading-tight">
                             Pilih Membership, <br />
-                            <span className="bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">Hemat Lebih Banyak</span>
+                            <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">Hemat Lebih Banyak</span>
                         </h1>
-                        <p className="text-gray-400 text-lg">
+                        <p className="text-slate-600 text-lg">
                             Nikmati diskon eksklusif dan berbagai keuntungan tambahan untuk setiap pembelian tiket event favoritmu.
                         </p>
                     </motion.div>
@@ -160,13 +159,15 @@ export default function Membership() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className={`max-w-md mx-auto mb-12 p-4 rounded-2xl border flex items-center gap-3 ${
-                            message.type === 'success' 
-                                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' 
-                                : 'bg-red-500/20 border-red-500/50 text-red-400'
+                            message.type === 'success'
+                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                : message.type === 'info'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                                    : 'bg-rose-50 border-rose-200 text-rose-700'
                         }`}
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                            message.type === 'success' ? 'bg-emerald-500/30' : 'bg-red-500/30'
+                            message.type === 'success' ? 'bg-emerald-100' : message.type === 'info' ? 'bg-blue-100' : 'bg-rose-100'
                         }`}>
                             {message.type === 'success' ? (
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -179,13 +180,13 @@ export default function Membership() {
                 )}
 
                 <div className="max-w-3xl mx-auto mb-12">
-                    <div className="bg-gray-800/80 backdrop-blur-xl rounded-[2rem] border border-gray-700 shadow-[0_8px_30px_rgb(0,0,0,0.3)] p-6 sm:p-8">
+                    <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8">
                         <div className="flex items-center justify-between gap-4 mb-5">
                             <div>
-                                <h2 className="text-xl font-display font-bold text-white">Metode Pembayaran</h2>
-                                <p className="text-gray-400 text-sm mt-1">Pilih metode pembayaran aktif yang ingin dipakai untuk upgrade membership.</p>
+                                <h2 className="text-xl font-display font-bold text-slate-900">Metode Pembayaran</h2>
+                                <p className="text-slate-500 text-sm mt-1">Pilih metode pembayaran aktif yang ingin dipakai untuk upgrade membership.</p>
                             </div>
-                            <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{paymentMethods.length} aktif</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">{paymentMethods.length} aktif</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -198,16 +199,16 @@ export default function Membership() {
                                         onClick={() => setSelectedMethod(method.code)}
                                         className={`text-left rounded-2xl border px-4 py-4 transition-all ${
                                             active
-                                                ? 'border-amber-500/50 bg-amber-500/20'
-                                                : 'border-gray-700 bg-gray-800 hover:border-amber-500/50 hover:bg-amber-500/10'
-                                            }`}
+                                                ? 'border-blue-300 bg-blue-50'
+                                                : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50'
+                                        }`}
                                     >
                                         <div className="flex items-start justify-between gap-3">
                                             <div>
-                                                <p className="font-bold text-white">{method.name}</p>
-                                                <p className="text-sm text-gray-400 mt-1">{method.description}</p>
+                                                <p className="font-bold text-slate-900">{method.name}</p>
+                                                <p className="text-sm text-slate-500 mt-1">{method.description}</p>
                                             </div>
-                                            <span className={`mt-1 w-5 h-5 rounded-full border-2 flex-shrink-0 ${active ? 'border-amber-500 bg-amber-500' : 'border-gray-600'}`} />
+                                            <span className={`mt-1 w-5 h-5 rounded-full border-2 flex-shrink-0 ${active ? 'border-blue-500 bg-blue-500' : 'border-slate-300'}`} />
                                         </div>
                                     </button>
                                 );
@@ -215,7 +216,7 @@ export default function Membership() {
                         </div>
 
                         {paymentMethods.length === 0 && (
-                            <div className="mt-4 rounded-2xl border border-amber-500/50 bg-amber-500/20 px-4 py-3 text-sm font-medium text-amber-300">
+                            <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
                                 Saat ini belum ada metode pembayaran aktif untuk upgrade membership.
                             </div>
                         )}
@@ -229,32 +230,32 @@ export default function Membership() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className={`relative group bg-gray-800 rounded-[2.5rem] p-8 border border-gray-700 shadow-[0_8px_40px_rgba(0,0,0,0.3)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-2 ${
-                                tier.popular ? 'ring-2 ring-amber-500 scale-105 md:scale-110 z-20' : 'z-10'
+                            className={`relative group bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-lg hover:-translate-y-2 ${
+                                tier.popular ? 'ring-2 ring-blue-300 scale-105 md:scale-110 z-20' : 'z-10'
                             }`}
                         >
                             {tier.popular && (
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
                                     Most Popular
                                 </div>
                             )}
 
                             <div className="mb-8">
-                                <h3 className="text-xl font-black text-white mb-2">{tier.name}</h3>
+                                <h3 className="text-xl font-black text-slate-900 mb-2">{tier.name}</h3>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-3xl font-black text-white">{tier.price}</span>
-                                    {tier.period && <span className="text-gray-400 text-sm font-medium">{tier.period}</span>}
+                                    <span className="text-3xl font-black text-slate-900">{tier.price}</span>
+                                    {tier.period && <span className="text-slate-500 text-sm font-medium">{tier.period}</span>}
                                 </div>
                                 <div className={`mt-4 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg bg-gradient-to-r ${tier.color} text-white`}>
-                                    Benefit Diskon: {tier.discount}
+                                    Benefit diskon: {tier.discount}
                                 </div>
                             </div>
 
                             <div className="space-y-4 mb-8">
                                 {tier.features.map((feature, fIdx) => (
-                                    <div key={fIdx} className="flex items-center gap-3 text-gray-400 text-sm font-medium">
-                                        <div className="w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center border border-gray-600 shrink-0 group-hover:bg-amber-500/30 group-hover:border-amber-500 transition-colors">
-                                            <svg className="w-3 h-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div key={fIdx} className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                                        <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center border border-blue-200 shrink-0 group-hover:bg-blue-100 group-hover:border-blue-300 transition-colors">
+                                            <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
@@ -268,10 +269,10 @@ export default function Membership() {
                                 disabled={user.membership === tier.id || loading || paymentMethods.length === 0}
                                 className={`w-full py-4 rounded-2xl text-sm font-black transition-all duration-300 flex items-center justify-center gap-2 ${
                                     user.membership === tier.id
-                                        ? 'bg-gray-700 text-gray-500 cursor-default'
+                                        ? 'bg-slate-100 text-slate-400 cursor-default'
                                         : tier.popular
-                                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40'
-                                            : 'bg-gray-700 text-white hover:bg-gray-600 shadow-lg shadow-gray-900/10'
+                                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40'
+                                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/25'
                                 }`}
                             >
                                 {loading === tier.id ? (
@@ -284,21 +285,21 @@ export default function Membership() {
                     ))}
                 </div>
 
-                <div className="mt-20 p-10 rounded-[3rem] bg-gradient-to-br from-gray-800 to-gray-900 text-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px]" />
+                <div className="mt-20 p-10 rounded-[3rem] bg-gradient-to-br from-blue-600 to-blue-700 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-blue-200/30 rounded-full blur-[100px]" />
                     <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="max-w-xl">
-                            <h2 className="text-3xl font-black mb-4 leading-tight">Berlangganan Sekarang & Hemat Uang Jajanmu!</h2>
-                            <p className="text-gray-400 font-medium">Semua membership berlaku selama 30 hari. Kamu bisa membatalkan atau mengubah tier kapan saja melalui pengaturan profil.</p>
+                            <h2 className="text-3xl font-black mb-4 leading-tight">Berlangganan Sekarang dan Hemat Uang Jajanmu</h2>
+                            <p className="text-blue-100 font-medium">Semua membership berlaku selama 30 hari. Kamu bisa membatalkan atau mengubah tier kapan saja melalui pengaturan profil.</p>
                         </div>
                         <div className="flex gap-4">
-                            <div className="text-center px-6 py-4 bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-2xl">
+                            <div className="text-center px-6 py-4 bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl">
                                 <p className="text-2xl font-black text-white">50k+</p>
-                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Active Users</p>
+                                <p className="text-[10px] text-blue-100 font-bold uppercase tracking-widest">Active Users</p>
                             </div>
-                            <div className="text-center px-6 py-4 bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-2xl">
+                            <div className="text-center px-6 py-4 bg-white/15 backdrop-blur-xl border border-white/20 rounded-2xl">
                                 <p className="text-2xl font-black text-white">100%</p>
-                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Secure Payment</p>
+                                <p className="text-[10px] text-blue-100 font-bold uppercase tracking-widest">Secure Payment</p>
                             </div>
                         </div>
                     </div>
@@ -307,3 +308,4 @@ export default function Membership() {
         </div>
     );
 }
+

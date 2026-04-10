@@ -23,17 +23,17 @@ export default function History() {
     }, []);
 
     const getStatusBadge = (t) => {
-        if (t.is_scanned) return <span className="px-3 py-1 rounded-full bg-gray-700/80 border border-gray-600 text-gray-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Sudah Terpakai</span>;
+        if (t.is_scanned) return <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider shadow-sm">Sudah Terpakai</span>;
 
         switch (t.payment_status) {
             case 'success':
-                return <span className="px-3 py-1 rounded-full bg-emerald-500/30 border border-emerald-500/60 text-emerald-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Success (Ready)</span>;
+                return <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-wider shadow-sm">Success (Ready)</span>;
             case 'pending':
-                return <span className="px-3 py-1 rounded-full bg-amber-500/30 border border-amber-500/60 text-amber-300 text-xs font-bold uppercase tracking-wider animate-pulse backdrop-blur-sm shadow-sm">Pending</span>;
+                return <span className="px-3 py-1 rounded-full bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold uppercase tracking-wider shadow-sm">Pending</span>;
             case 'failed':
-                return <span className="px-3 py-1 rounded-full bg-red-500/30 border border-red-500/60 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">Failed / Cancelled</span>;
+                return <span className="px-3 py-1 rounded-full bg-red-100 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider shadow-sm">Failed / Cancelled</span>;
             default:
-                return <span className="px-3 py-1 rounded-full bg-gray-700/80 border border-gray-600 text-gray-400 text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">{t.payment_status}</span>;
+                return <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider shadow-sm">{t.payment_status}</span>;
         }
     };
 
@@ -71,10 +71,10 @@ export default function History() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100 relative overflow-hidden font-sans">
             {/* Ambient Background Glows */}
-            <div className="absolute top-[10%] -left-[10%] w-[50%] h-[500px] bg-amber-500/10 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob pointer-events-none z-0"></div>
-            <div className="absolute bottom-[20%] -right-[10%] w-[60%] h-[600px] bg-amber-400/5 rounded-full mix-blend-multiply filter blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
+            <div className="absolute top-[10%] -left-[10%] w-[50%] h-[500px] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-[100px] opacity-60 animate-blob pointer-events-none z-0"></div>
+            <div className="absolute bottom-[20%] -right-[10%] w-[60%] h-[600px] bg-sky-100/50 rounded-full mix-blend-multiply filter blur-[120px] opacity-70 animate-blob animation-delay-2000 pointer-events-none z-0"></div>
 
             <Navbar />
 
@@ -108,7 +108,7 @@ export default function History() {
                         </div>
                         <h3 className="text-2xl font-bold text-slate-900 mb-2">No tickets yet</h3>
                         <p className="text-slate-500 max-w-sm mx-auto">You haven't purchased any tickets. Discover amazing experiences and secure your spot today!</p>
-                        <a href="/#events" className="mt-8 inline-block px-8 py-3 bg-slate-900 text-white font-bold rounded-xl shadow-md hover:bg-slate-800 transition-colors">
+                        <a href="/#events" className="mt-8 inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 transition-colors">
                             Browse Events
                         </a>
                     </motion.div>

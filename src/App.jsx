@@ -19,13 +19,13 @@ import Chatbot from './components/Chatbot';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
   return user ? children : <Navigate to="/login" />;
 };
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
   return (user && user.role === 'admin') ? children : <Navigate to="/" />;
 };
 
@@ -104,7 +104,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="font-sans min-h-screen bg-gray-900 text-white overflow-x-hidden">
+        <div className="font-sans min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
           <AnimatedRoutes />
           <Chatbot />
         </div>
@@ -114,3 +114,4 @@ function App() {
 }
 
 export default App;
+

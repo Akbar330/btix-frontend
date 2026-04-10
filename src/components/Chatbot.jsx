@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { asArray } from '../utils/api';
 
-const SYSTEM_PROMPT = `Kamu adalah asisten AI untuk platform BANGSA TIX.ID — platform pembelian tiket event online di Indonesia.
+const SYSTEM_PROMPT = `Kamu adalah asisten AI untuk platform BANGSA TIX.ID - platform pembelian tiket event online di Indonesia.
 Kamu membantu pengguna dengan:
 - Informasi tentang event yang tersedia
 - Cara pembelian tiket
@@ -33,7 +33,7 @@ function TypingDots() {
 export default function Chatbot() {
     const [open, setOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'Hei! 👋 Saya asisten BANGSA TIX.ID. Ada yang bisa saya bantu terkait event atau pembelian tiket?' }
+        { role: 'assistant', content: 'Hei! Saya asisten BANGSA TIX.ID. Ada yang bisa saya bantu terkait event atau pembelian tiket?' }
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -115,16 +115,16 @@ export default function Chatbot() {
                         style={{ height: '520px' }}
                     >
                         {/* Header */}
-                        <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-primary-600 to-violet-600 flex-shrink-0">
+                        <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex-shrink-0">
                             <div className="relative">
-                                <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-lg font-bold border border-white/30">
-                                    🤖
+                                <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-xs font-bold border border-white/30">
+                                    AI
                                 </div>
                                 <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-white font-bold text-sm leading-none">BANGSA TIX.ID AI</p>
-                                <p className="text-white/70 text-xs mt-0.5">Online · Siap membantu</p>
+                                <p className="text-white/70 text-xs mt-0.5">Online - Siap membantu</p>
                             </div>
                             <button
                                 onClick={() => setOpen(false)}
@@ -147,14 +147,14 @@ export default function Chatbot() {
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     {msg.role === 'assistant' && (
-                                        <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center text-xs mr-2 flex-shrink-0 mt-0.5 shadow-sm">
-                                            🤖
+                                        <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-[10px] text-white font-bold mr-2 flex-shrink-0 mt-0.5 shadow-sm">
+                                            AI
                                         </div>
                                     )}
                                     <div
                                         className={`max-w-[78%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap shadow-sm
                                         ${msg.role === 'user'
-                                                ? 'bg-gradient-to-br from-primary-500 to-violet-600 text-white rounded-br-sm'
+                                                ? 'bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-br-sm'
                                                 : 'bg-white border border-slate-100 text-slate-800 rounded-bl-sm'
                                             }`}
                                     >
@@ -169,8 +169,8 @@ export default function Chatbot() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="flex justify-start"
                                 >
-                                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center text-xs mr-2 flex-shrink-0 mt-0.5 shadow-sm">
-                                        🤖
+                                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-[10px] text-white font-bold mr-2 flex-shrink-0 mt-0.5 shadow-sm">
+                                        AI
                                     </div>
                                     <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-sm px-3.5 py-2.5 shadow-sm">
                                         <TypingDots />
@@ -182,7 +182,7 @@ export default function Chatbot() {
 
                         {/* Input */}
                         <div className="flex-shrink-0 px-3 py-3 bg-white/95 backdrop-blur-xl border-t border-slate-100">
-                            <div className="flex items-end gap-2 bg-slate-100/70 rounded-2xl px-3 py-2 border border-slate-200/60 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-all">
+                            <div className="flex items-end gap-2 bg-slate-100/70 rounded-2xl px-3 py-2 border border-slate-200/60 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
                                 <textarea
                                     ref={inputRef}
                                     rows={1}
@@ -196,14 +196,14 @@ export default function Chatbot() {
                                 <button
                                     onClick={sendMessage}
                                     disabled={!input.trim() || loading}
-                                    className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center text-white shadow-md shadow-primary-500/30 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-primary-500/50 transition-all flex-shrink-0"
+                                    className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-500/30 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-blue-500/50 transition-all flex-shrink-0"
                                 >
                                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
                                     </svg>
                                 </button>
                             </div>
-                            <p className="text-[10px] text-slate-400 text-center mt-1.5">Powered by Groq · Llama 3.3 70B</p>
+                            <p className="text-[10px] text-slate-400 text-center mt-1.5">Powered by Groq - Llama 3.3 70B</p>
                         </div>
                     </motion.div>
                 )}
@@ -214,7 +214,7 @@ export default function Chatbot() {
                 onClick={() => setOpen(o => !o)}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.94 }}
-                className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-violet-600 text-white shadow-xl shadow-primary-500/40 flex items-center justify-center transition-all"
+                className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-xl shadow-blue-500/40 flex items-center justify-center transition-all"
                 aria-label="Open AI Chatbot"
             >
                 <AnimatePresence mode="wait" initial={false}>
@@ -237,9 +237,9 @@ export default function Chatbot() {
                             animate={{ rotate: 0, opacity: 1 }}
                             exit={{ rotate: -90, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="text-2xl leading-none"
+                            className="text-[11px] font-bold leading-none tracking-wide"
                         >
-                            💬
+                            CHAT
                         </motion.span>
                     )}
                 </AnimatePresence>
@@ -247,7 +247,7 @@ export default function Chatbot() {
                 {/* Pulse ring */}
                 {!open && (
                     <motion.span
-                        className="absolute inset-0 rounded-2xl bg-primary-400 -z-10"
+                        className="absolute inset-0 rounded-2xl bg-blue-400 -z-10"
                         animate={{ scale: [1, 1.25, 1], opacity: [0.5, 0, 0.5] }}
                         transition={{ duration: 2.5, repeat: Infinity }}
                     />
@@ -256,3 +256,5 @@ export default function Chatbot() {
         </>
     );
 }
+
+
