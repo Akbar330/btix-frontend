@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from './components/PageTransition';
 
+
+
 import Home from './pages/Home';
 import TicketDetail from './pages/TicketDetail';
 import Checkout from './pages/Checkout';

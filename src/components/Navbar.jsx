@@ -46,6 +46,15 @@ const Icons = {
     ),
 };
 
+const PremiumBadge = ({ label }) => (
+    <span className="badge-premium-gold">
+        <svg className="w-2.5 h-2.5 relative z-10" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+        <span className="relative z-10">{label}</span>
+    </span>
+);
+
 export default function Navbar() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -56,6 +65,7 @@ export default function Navbar() {
     const isHome = location.pathname === '/';
     const membership = user?.membership || 'basic';
     const membershipLabel = typeof membership === 'string' ? membership.toUpperCase() : 'BASIC';
+    const isPremium = membership !== 'basic';
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -81,12 +91,13 @@ export default function Navbar() {
             return (
                 <Link
                     to={to}
-                    className={`relative flex items-center gap-2 px-5 py-2.5 text-base font-bold rounded-lg text-white 
-                        bg-blue-600 
-                        hover:bg-blue-700 hover:scale-[1.02]
-                        active:scale-[0.98]
+                    className={`relative flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg text-black cyber-btn
+                        bg-gradient-to-r from-cyan-400 to-sky-500
+                        hover:from-cyan-300 hover:to-sky-400
+                        shadow-[0_0_15px_rgba(14,165,233,0.4)]
+                        hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]
                         transition-all duration-200
-                        ${active ? 'ring-2 ring-blue-300' : ''}`}
+                        ${active ? 'ring-2 ring-cyan-400/60' : ''}`}
                 >
                     {Icon && <Icon />}
                     {label}
@@ -96,26 +107,33 @@ export default function Navbar() {
         return (
             <Link
                 to={to}
-                className={`relative flex items-center gap-2 px-5 py-2.5 text-base font-bold rounded-lg transition-all duration-200
+                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200
                     ${active
-                        ? 'text-blue-700 bg-blue-50'
-                        : 'text-slate-600 hover:text-blue-700 hover:bg-blue-50'
+                        ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/20'
+                        : 'text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/8'
                     }`}
             >
                 {Icon && <Icon />}
                 {label}
+                {active && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-cyan-400 rounded-full shadow-[0_0_6px_rgba(14,165,233,0.8)]" />
+                )}
             </Link>
         );
     };
 
     return (
         <>
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                ? 'bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm'
-                : 'bg-white/95 backdrop-blur border-b border-slate-200'
-                }`}>
+            {/* Top accent line */}
+            <div className="fixed top-0 left-0 right-0 h-[2px] z-[100] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
+
+            <nav className={`fixed top-[2px] left-0 right-0 z-50 transition-all duration-500 ${
+                scrolled
+                    ? 'bg-[#020817]/95 backdrop-blur-xl border-b border-cyan-500/15 shadow-[0_4px_30px_rgba(14,165,233,0.08)]'
+                    : 'bg-[#020817]/80 backdrop-blur-md border-b border-white/5'
+            }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center h-[90px] gap-3">
+                    <div className="flex items-center h-[72px] gap-3">
 
                         {/* Back Button */}
                         {!isHome && (
@@ -123,7 +141,7 @@ export default function Navbar() {
                                 initial={{ opacity: 0, x: -8 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 onClick={() => navigate(-1)}
-                                className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-700 transition-colors shrink-0"
+                                className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-cyan-400/10 text-slate-400 hover:text-cyan-400 border border-slate-700 hover:border-cyan-400/30 transition-all shrink-0"
                                 aria-label="Go back"
                             >
                                 <Icons.Back />
@@ -132,26 +150,26 @@ export default function Navbar() {
 
                         {/* Logo */}
                         <Link to="/" className="flex items-center gap-3 shrink-0 group">
-                            <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 group-hover:scale-105 transition-all duration-200">
+                            <div className="relative w-9 h-9 rounded-lg flex items-center justify-center text-black font-black text-sm shadow-lg transition-all duration-300
+                                bg-gradient-to-br from-cyan-400 to-sky-500
+                                shadow-[0_0_15px_rgba(14,165,233,0.4)]
+                                group-hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]
+                                group-hover:scale-105">
                                 B
-                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-[1.5px] border-white" />
+                                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border border-[#020817] shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
                             </div>
 
-                            <span className="font-black tracking-tight text-slate-900">
-                                {/* Mobile */}
-                                <span className="sm:hidden text-lg">
-                                    BTIX
-                                </span>
-
-                                {/* Desktop */}
-                                <span className="hidden sm:inline text-2xl">
-                                    <span className="text-blue-600">BTIX</span> ID
+                            <span className="font-black tracking-tight">
+                                <span className="sm:hidden text-lg text-white">BTIX</span>
+                                <span className="hidden sm:inline text-xl">
+                                    <span className="text-gradient-cyan">BTIX</span>
+                                    <span className="text-slate-400"> ID</span>
                                 </span>
                             </span>
                         </Link>
 
                         {/* Separator */}
-                        <div className="hidden md:block h-5 w-px bg-slate-100 mx-1" />
+                        <div className="hidden md:block h-5 w-px bg-slate-700/60 mx-1" />
 
                         {/* Center Nav Links */}
                         <div className="hidden md:flex items-center gap-0.5">
@@ -181,25 +199,23 @@ export default function Navbar() {
                                 <div className="relative">
                                     <button
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-300 hover:border-blue-400/60 transition-all duration-200 group"
+                                        className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-xl
+                                            bg-slate-800/70 hover:bg-slate-700/80
+                                            border border-slate-700/80 hover:border-cyan-400/30
+                                            transition-all duration-200 group"
                                     >
-                                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-black uppercase shadow-sm">
+                                        {/* Avatar */}
+                                        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-black text-xs font-black uppercase shadow-sm
+                                            bg-gradient-to-br from-cyan-400 to-sky-500
+                                            shadow-[0_0_10px_rgba(14,165,233,0.3)]">
                                             {user.name.charAt(0)}
                                         </div>
                                         <div className="text-left leading-none">
                                             <div className="flex items-center gap-1.5">
-                                                <p className="text-sm font-bold text-slate-900">{user.name.split(' ')[0]}</p>
-                                                {membership !== 'basic' && (
-                                                    <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full border ${
-                                                        membership === 'premium' 
-                                                            ? 'bg-blue-100 text-blue-700 border-blue-300' 
-                                                            : 'bg-blue-100 text-blue-700 border-blue-300'
-                                                    }`}>
-                                                        {membershipLabel}
-                                                    </span>
-                                                )}
+                                                <p className="text-sm font-bold text-slate-200">{user.name.split(' ')[0]}</p>
+                                                {isPremium && <PremiumBadge label={membershipLabel} />}
                                             </div>
-                                            <p className="text-[10px] text-slate-500 font-medium">Lihat Profil</p>
+                                            <p className="text-[10px] text-slate-500 font-medium mt-0.5">Lihat Profil</p>
                                         </div>
                                         <span className={`transition-transform duration-200 text-slate-500 ${userMenuOpen ? 'rotate-180' : ''}`}>
                                             <Icons.ChevronDown />
@@ -213,44 +229,54 @@ export default function Navbar() {
                                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                                 exit={{ opacity: 0, y: 4, scale: 0.97 }}
                                                 transition={{ duration: 0.15 }}
-                                                className="absolute right-0 top-full mt-2 w-52 bg-white border border-slate-200 rounded-lg shadow-lg z-50"
+                                                className="absolute right-0 top-full mt-2 w-56 rounded-xl overflow-hidden z-50
+                                                    bg-[#060f1e]/95 backdrop-blur-xl
+                                                    border border-cyan-500/15
+                                                    shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_20px_rgba(14,165,233,0.05)]"
                                             >
-                                                <div className="px-4 py-3 border-b border-slate-200 bg-white/50">
-                                                    <p className="text-xs text-slate-500">Logged in as</p>
-                                                    <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                                                {/* Header */}
+                                                <div className="px-4 py-3 border-b border-slate-700/50 bg-slate-800/30">
+                                                    <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Logged in as</p>
+                                                    <p className="text-sm font-bold text-slate-200 truncate mt-0.5">{user.email}</p>
+                                                    {isPremium && (
+                                                        <div className="mt-2">
+                                                            <PremiumBadge label={`✦ ${membershipLabel} Member`} />
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="p-1.5">
                                                     <Link
                                                         to="/membership"
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-600 rounded-lg transition-colors"
+                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-cyan-400/8 hover:text-cyan-300 rounded-lg transition-colors"
                                                     >
                                                         <Icons.Membership />
                                                         Langganan
                                                     </Link>
                                                     <button
                                                         onClick={handleLogout}
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-rose-600 rounded-lg transition-colors"
+                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-lg transition-colors"
                                                     >
                                                         <Icons.Logout />
                                                         Keluar
                                                     </button>
                                                 </div>
+                                                {/* bottom accent */}
+                                                <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
                                 </div>
                             ) : (
                                 <>
-                                    <Link to="/login" className="px-5 py-2.5 text-base font-semibold text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors">
+                                    <Link to="/login" className="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/8 rounded-xl transition-all">
                                         Masuk
                                     </Link>
                                     <Link
                                         to="/register"
-                                        className="px-6 py-2.5 text-base font-bold text-white rounded-xl
-                                            bg-blue-600 hover:bg-blue-700
-                                            shadow-md shadow-blue-500/25 hover:shadow-blue-500/35
-                                            hover:scale-[1.03] active:scale-[0.98]
-                                            transition-all duration-200"
+                                        className="px-5 py-2 text-sm font-bold text-black rounded-xl cyber-btn
+                                            bg-gradient-to-r from-cyan-400 to-sky-500
+                                            shadow-[0_0_15px_rgba(14,165,233,0.4)]
+                                            hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]"
                                     >
                                         Daftar Sekarang
                                     </Link>
@@ -260,7 +286,7 @@ export default function Navbar() {
 
                         {/* Mobile hamburger */}
                         <button
-                            className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-slate-800/70 hover:bg-slate-700 text-slate-400 hover:text-cyan-300 border border-slate-700 transition-all"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             aria-label="Menu"
                         >
@@ -287,7 +313,7 @@ export default function Navbar() {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="md:hidden border-t border-slate-200 bg-white overflow-hidden"
+                            className="md:hidden border-t border-slate-700/50 bg-[#060f1e]/98 backdrop-blur-xl overflow-hidden"
                         >
                             <div className="px-4 pt-3 pb-4 space-y-1">
                                 {[
@@ -299,12 +325,12 @@ export default function Navbar() {
                                     <Link
                                         key={to}
                                         to={to}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-colors ${isActive(to)
-                                            ? 'bg-blue-600/30 text-blue-600 shadow-sm'
-                                            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                                            }`}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive(to)
+                                            ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                                        }`}
                                     >
-                                        <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${isActive(to) ? 'bg-blue-600/30 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
+                                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center ${isActive(to) ? 'bg-cyan-400/15 text-cyan-400' : 'bg-slate-800 text-slate-500'}`}>
                                             <Icon />
                                         </span>
                                         {label}
@@ -314,32 +340,36 @@ export default function Navbar() {
                                 {user?.role === 'admin' && (
                                     <Link
                                         to="/admin/scanner"
-                                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white bg-blue-600 shadow-lg shadow-blue-500/25"
+                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-black
+                                            bg-gradient-to-r from-cyan-400 to-sky-500
+                                            shadow-[0_0_15px_rgba(14,165,233,0.3)]"
                                     >
-                                        <span className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                                        <span className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center">
                                             <Icons.Scanner />
                                         </span>
                                         Scan Tiket
                                     </Link>
                                 )}
 
-                                <div className="pt-3 mt-2 border-t border-slate-200">
+                                <div className="pt-3 mt-2 border-t border-slate-700/50">
                                     {user ? (
                                         <div className="space-y-2">
-                                            <div className="flex items-center gap-3 px-4 py-3 bg-slate-100 rounded-2xl border border-slate-300">
-                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-black shadow-sm">
+                                            <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
+                                                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-black font-black shadow-sm
+                                                    bg-gradient-to-br from-cyan-400 to-sky-500">
                                                     {user.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-slate-900">{user.name}</p>
+                                                    <p className="text-sm font-bold text-slate-200">{user.name}</p>
                                                     <p className="text-xs text-slate-500">{user.email}</p>
+                                                    {isPremium && <div className="mt-1"><PremiumBadge label={membershipLabel} /></div>}
                                                 </div>
                                             </div>
                                             <button
                                                 onClick={handleLogout}
-                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-rose-600 hover:bg-rose-100 transition-colors"
+                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 border border-slate-700/50 hover:border-rose-500/20 transition-all"
                                             >
-                                                <span className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center">
+                                                <span className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
                                                     <Icons.Logout />
                                                 </span>
                                                 Keluar
@@ -347,10 +377,12 @@ export default function Navbar() {
                                         </div>
                                     ) : (
                                         <div className="flex gap-2">
-                                            <Link to="/login" className="flex-1 text-center px-4 py-3 text-sm font-semibold text-slate-500 border border-slate-200 rounded-2xl hover:bg-slate-100 transition-colors">
+                                            <Link to="/login" className="flex-1 text-center px-4 py-3 text-sm font-semibold text-slate-400 border border-slate-700 rounded-xl hover:bg-slate-800 transition-all">
                                                 Masuk
                                             </Link>
-                                            <Link to="/register" className="flex-1 text-center px-4 py-3 text-sm font-bold text-white bg-blue-600 rounded-2xl shadow-md shadow-blue-500/25 transition-colors">
+                                            <Link to="/register" className="flex-1 text-center px-4 py-3 text-sm font-bold text-black rounded-xl
+                                                bg-gradient-to-r from-cyan-400 to-sky-500
+                                                shadow-[0_0_12px_rgba(14,165,233,0.3)]">
                                                 Daftar
                                             </Link>
                                         </div>
@@ -364,5 +396,3 @@ export default function Navbar() {
         </>
     );
 }
-
-

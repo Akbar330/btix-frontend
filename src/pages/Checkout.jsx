@@ -5,12 +5,6 @@ import api, { asObject } from '../utils/api';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../contexts/AuthContext';
 
-const membershipRates = {
-    basic: 0,
-    regular: 0.15,
-    premium: 0.3,
-};
-
 export default function Checkout() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -62,12 +56,14 @@ export default function Checkout() {
 
     const pricing = useMemo(() => {
         const subtotal = Number(ticket?.price || 0) * quantity;
-        const membershipDiscount = subtotal * (membershipRates[user?.membership] || 0);
+        // Get discount from user's membershipPlan, fallback to 0 if not found
+        const discountRate = user?.membershipPlan?.discount_percentage ? (user.membershipPlan.discount_percentage / 100) : 0;
+        const membershipDiscount = subtotal * discountRate;
         const voucherDiscount = Number(voucherPreview?.discount_amount || 0);
         const total = Math.max(0, subtotal - membershipDiscount - voucherDiscount);
 
         return { subtotal, membershipDiscount, voucherDiscount, total };
-    }, [ticket, quantity, user?.membership, voucherPreview]);
+    }, [ticket, quantity, user?.membershipPlan, voucherPreview]);
 
     const handlePreviewVoucher = async () => {
         if (!voucherCode.trim()) {
