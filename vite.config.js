@@ -10,11 +10,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://btix-backend-main-58d3hk.free.laravel.cloud/',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/storage': {
-        target: 'https://btix-backend-main-58d3hk.free.laravel.cloud/',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
     },
