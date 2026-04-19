@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { AnimatePresence, motion as motionLib } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import api, { asArray } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -13,7 +14,17 @@ Kamu membantu pengguna dengan:
 
 Gaya bicara kamu: ramah, singkat, profesional, pakai bahasa Indonesia.
 Jika ditanya di luar konteks BANGSA TIX.ID atau tiket event, arahkan kembali ke topik BANGSA TIX.ID dengan sopan.
-Jika user sudah login, gunakan nama mereka untuk personalisasi.`;
+Jika user sudah login, gunakan nama mereka untuk personalisasi.
+
+PENTING: 
+1. Jika Anda menyebutkan tiket spesifik, sertakan tag [TICKET_CARD:ID].
+2. Jika Anda mengarahkan pengguna ke halaman tertentu, sertakan tag [LINK:path:label]. 
+   Contoh: "Lihat tiket Anda di sini: [LINK:/history:Menu Tiket Saya]".
+   Daftar Path yang tersedia:
+   - /history (Halaman riwayat/tiket saya)
+   - / (Halaman beranda/daftar event)
+   - /login (Halaman masuk)
+   - /register (Halaman daftar)`;
 
 function TypingDots() {
     const MotionSpan = motionLib.span;
@@ -32,15 +43,22 @@ function TypingDots() {
 }
 
 export default function Chatbot() {
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [open, setOpen] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [initialGreeting, setInitialGreeting] = useState(true);
+    const [messages, setMessages] = useState(() => {
+        const saved = sessionStorage.getItem('btix_chat_history');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [initialGreeting, setInitialGreeting] = useState(() => {
+        const saved = sessionStorage.getItem('btix_chat_history');
+        return !saved;
+    });
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [events, setEvents] = useState([]);
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
+    const navigate = useNavigate();
     const MotionDiv = motionLib.div;
     const MotionButton = motionLib.button;
 
@@ -49,13 +67,34 @@ export default function Chatbot() {
             const greeting = user
                 ? `Halo ${user.name}! Saya asisten BTIX ID. Ada yang bisa saya bantu terkait event atau pembelian tiket?`
                 : 'Halo! Saya asisten BTIX ID. Ada yang bisa saya bantu terkait event atau tiket?';
-            setMessages([{ role: 'assistant', content: greeting }]);
+            const initialMsg = { role: 'assistant', content: greeting };
+            setMessages([initialMsg]);
+            sessionStorage.setItem('btix_chat_history', JSON.stringify([initialMsg]));
             setInitialGreeting(false);
         }
     }, [user, initialGreeting]);
 
+    // Persist messages to sessionStorage
     useEffect(() => {
-        api.get('/tickets').then((response) => setEvents(asArray(response.data))).catch(() => {});
+        if (messages.length > 0) {
+            sessionStorage.setItem('btix_chat_history', JSON.stringify(messages));
+        }
+    }, [messages]);
+
+    // Clear history on logout
+    useEffect(() => {
+        if (!user && !authLoading) {
+            const saved = sessionStorage.getItem('btix_chat_history');
+            if (saved) {
+                sessionStorage.removeItem('btix_chat_history');
+                setMessages([]);
+                setInitialGreeting(true);
+            }
+        }
+    }, [user, authLoading]);
+
+    useEffect(() => {
+        api.get('/tickets').then((response) => setEvents(asArray(response.data))).catch(() => { });
     }, []);
 
     useEffect(() => {
@@ -73,7 +112,7 @@ export default function Chatbot() {
         }
         if (events.length > 0) {
             const eventList = events.map((event) =>
-                `- ${event.title} | Tanggal: ${new Date(event.event_date).toLocaleDateString('id-ID')} | Harga: Rp ${Number(event.price).toLocaleString('id-ID')} | Sisa Quota: ${event.quota}`
+                `- [ID: ${event.id}] ${event.title} | Tanggal: ${new Date(event.event_date).toLocaleDateString('id-ID')} | Harga: Rp ${Number(event.price).toLocaleString('id-ID')} | Sisa Quota: ${event.quota}`
             ).join('\n');
             content += `\n\nDaftar event yang tersedia saat ini:\n${eventList}`;
         }
@@ -146,15 +185,85 @@ export default function Chatbot() {
                                     key={index}
                                     initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                    className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'} gap-2`}
                                 >
-                                    <div className={`max-w-[82%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-7 ${
-                                        message.role === 'user'
+                                    <div className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed ${message.role === 'user'
                                             ? 'bg-[var(--brand-navy)] text-white'
-                                            : 'bg-white text-[var(--brand-navy)] border border-[rgba(13,43,87,0.08)]'
-                                    }`}>
-                                        {message.content}
+                                            : 'bg-white text-[var(--brand-navy)] border border-[rgba(13,43,87,0.08)] shadow-sm'
+                                        }`}>
+                                        {message.content.replace(/\[TICKET_CARD:\d+\]|\[LINK:[^\]]+\]/g, '').trim()}
                                     </div>
+
+                                    {/* Render Cards if present in message */}
+                                    {message.role === 'assistant' && (
+                                        <div className="flex w-full flex-col gap-2">
+                                            {/* Ticket Cards */}
+                                            {[...message.content.matchAll(/\[TICKET_CARD:(\d+)\]/g)].map((match) => {
+                                                const ticketId = parseInt(match[1]);
+                                                const ticket = events.find(e => Number(e.id) === ticketId);
+                                                if (!ticket) return null;
+
+                                                return (
+                                                    <MotionDiv
+                                                        key={`${index}-ticket-${ticketId}`}
+                                                        initial={{ opacity: 0, x: -10 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        transition={{ delay: 0.2 }}
+                                                        onClick={() => navigate(`/ticket/${ticket.id}`)}
+                                                        className="group flex max-w-[85%] cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border border-[rgba(216,166,70,0.2)] bg-white p-3 shadow-md transition-all hover:border-[var(--brand-gold)] hover:shadow-lg"
+                                                    >
+                                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[rgba(216,166,70,0.1)] text-[var(--brand-gold)]">
+                                                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <h4 className="truncate text-xs font-black uppercase tracking-wider text-[var(--brand-navy)] group-hover:text-[var(--brand-gold)]">
+                                                                {ticket.title}
+                                                            </h4>
+                                                            <div className="mt-1 flex items-baseline gap-1.5">
+                                                                <span className="text-[10px] font-bold text-[var(--text-muted)]">Rp</span>
+                                                                <span className="text-sm font-black text-[var(--brand-navy)]">
+                                                                    {Number(ticket.price).toLocaleString('id-ID')}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(13,43,87,0.04)] text-[var(--brand-gold)] transition-colors group-hover:bg-[var(--brand-gold)] group-hover:text-white">
+                                                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7-7 7" /></svg>
+                                                        </div>
+                                                    </MotionDiv>
+                                                );
+                                            })}
+
+                                            {/* Navigation Link Cards */}
+                                            {[...message.content.matchAll(/\[LINK:([^:]+):([^\]]+)\]/g)].map((match, i) => {
+                                                const path = match[1];
+                                                const label = match[2];
+
+                                                return (
+                                                    <MotionDiv
+                                                        key={`${index}-link-${i}`}
+                                                        initial={{ opacity: 0, x: -10 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        transition={{ delay: 0.3 }}
+                                                        onClick={() => navigate(path)}
+                                                        className="group flex max-w-[85%] cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border border-[rgba(13,43,87,0.08)] bg-[rgba(13,43,87,0.02)] p-3 shadow-sm transition-all hover:bg-[var(--brand-navy)] hover:text-white"
+                                                    >
+                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/50 text-[var(--brand-navy)] transition-colors group-hover:bg-white/20 group-hover:text-white">
+                                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <h4 className="text-xs font-black uppercase tracking-wider">
+                                                                {label}
+                                                            </h4>
+                                                            <p className="text-[10px] font-bold opacity-60">Buka Halaman</p>
+                                                        </div>
+                                                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:translate-x-1">
+                                                            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
+                                                        </div>
+                                                    </MotionDiv>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </MotionDiv>
                             ))}
 

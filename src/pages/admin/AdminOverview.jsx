@@ -11,18 +11,31 @@ export default function AdminOverview() {
     const [analytics, setAnalytics] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [maintenance, setMaintenance] = useState(false);
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [analyticsRes, txRes] = await Promise.all([
+            const [analyticsRes, txRes, settingsRes] = await Promise.all([
                 api.get('/admin/analytics'),
                 api.get('/transactions'),
+                api.get('/settings'),
             ]);
             setAnalytics(analyticsRes.data);
             setTransactions(asArray(txRes.data));
+            setMaintenance(settingsRes.data.maintenance_mode);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const toggleMaintenance = async () => {
+        const nextValue = !maintenance;
+        try {
+            await api.patch('/admin/settings', { maintenance_mode: nextValue });
+            setMaintenance(nextValue);
+        } catch (error) {
+            console.error("Gagal update maintenance mode", error);
         }
     };
 
@@ -34,12 +47,28 @@ export default function AdminOverview() {
 
     return (
         <div className="animate-float-up">
-            <header className="mb-10">
+            <header className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                 <SectionIntro 
                     eyebrow="Admin Overview" 
                     title="Dashboard Statistik" 
                     description="Pantau performa penjualan, revenue, dan interaksi pengguna secara real-time."
                 />
+
+                <SurfaceCard className="max-w-xs shrink-0 bg-[rgba(13,43,87,0.03)] p-4 shadow-none">
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="min-w-0">
+                            <p className="text-[0.6rem] font-black uppercase tracking-widest text-[var(--brand-gold)]">Global Status</p>
+                            <p className="truncate text-xs font-bold text-[var(--brand-navy)]">Maintenance Mode</p>
+                        </div>
+                        <button 
+                            type="button"
+                            onClick={toggleMaintenance}
+                            className={`relative h-6 w-11 rounded-full p-1 transition-colors duration-300 ${maintenance ? 'bg-rose-500' : 'bg-slate-200'}`}
+                        >
+                            <div className={`h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${maintenance ? 'translate-x-5' : 'translate-x-0'}`} />
+                        </button>
+                    </div>
+                </SurfaceCard>
             </header>
 
             <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">

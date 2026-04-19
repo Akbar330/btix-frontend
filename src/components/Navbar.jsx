@@ -245,7 +245,7 @@ export default function Navbar() {
                     <button
                         type="button"
                         onClick={() => setMobileMenuOpen((value) => !value)}
-                        className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(13,43,87,0.08)] bg-white text-[var(--brand-navy)] shadow-[0_10px_24px_rgba(16,39,74,0.08)] md:hidden"
+                        className="flex h-10 w-10 items-center justify-center text-[var(--brand-navy)] md:hidden transition-colors hover:text-[var(--brand-gold)]"
                         aria-label="Toggle navigation"
                     >
                         <div className="grid gap-1">

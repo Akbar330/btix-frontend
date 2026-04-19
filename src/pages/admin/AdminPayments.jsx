@@ -61,12 +61,36 @@ export default function AdminPayments() {
                         {paymentMethods.map((method) => (
                             <div key={method.id} className="flex flex-col gap-4 rounded-2xl border border-[rgba(13,43,87,0.06)] bg-[rgba(13,43,87,0.02)] p-6 transition-all duration-300 hover:border-[rgba(13,43,87,0.12)] hover:bg-white hover:shadow-[0_15px_40px_rgba(16,39,74,0.05)] sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-center gap-5">
-                                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl text-xl font-bold ${method.is_active ? 'bg-[var(--brand-navy)] text-white' : 'bg-slate-100 text-slate-400'}`}>
-                                        {method.name.charAt(0)}
+                                    <div className={`group/logo relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 bg-white transition-all duration-500 ${method.is_active ? 'border-[rgba(216,166,70,0.15)] shadow-[0_8px_20px_rgba(13,43,87,0.04)]' : 'border-slate-100 opacity-60 grayscale'}`}>
+                                        {method.logo_url ? (
+                                            <img 
+                                                src={method.logo_url} 
+                                                alt={method.name} 
+                                                className="h-10 w-10 object-contain transition-transform duration-500 group-hover/logo:scale-110"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'flex';
+                                                }}
+                                            />
+                                        ) : null}
+                                        <span 
+                                            className="text-xl font-black text-[var(--brand-navy)]"
+                                            style={{ display: method.logo_url ? 'none' : 'flex' }}
+                                        >
+                                            {method.name.charAt(0)}
+                                        </span>
+                                        
+                                        {/* Subtle overlay gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[rgba(216,166,70,0.05)] pointer-events-none" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[var(--brand-navy)]">{method.name}</h3>
-                                        <p className="mt-1 text-sm text-[var(--text-muted)]">{method.description}</p>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-lg font-black tracking-tight text-[var(--brand-navy)]">{method.name}</h3>
+                                            {method.is_active && (
+                                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            )}
+                                        </div>
+                                        <p className="mt-1 text-sm leading-relaxed text-[var(--text-muted)] max-w-md">{method.description}</p>
                                     </div>
                                 </div>
                                 
