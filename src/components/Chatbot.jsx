@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion as motionLib } from 'framer-motion';
 import api, { asArray } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -13,21 +13,18 @@ Kamu membantu pengguna dengan:
 
 Gaya bicara kamu: ramah, singkat, profesional, pakai bahasa Indonesia.
 Jika ditanya di luar konteks BANGSA TIX.ID atau tiket event, arahkan kembali ke topik BANGSA TIX.ID dengan sopan.
-Jika user sudah login, gunakan nama mereka untuk personalisasi. Contoh: "Hai [Nama], ada yang bisa saya bantu hari ini?"
-Jika ditanya tentang siapa nama saya(pengguna), jawab dengan nama pengguna yang sudah login. Contoh: "Nama saya [Nama Pengguna]."
-
-Data event yang tersedia akan diberikan saat konteks dibutuhkan.`;
+Jika user sudah login, gunakan nama mereka untuk personalisasi.`;
 
 function TypingDots() {
+    const MotionSpan = motionLib.span;
     return (
         <div className="flex items-center gap-1.5 px-1 py-1">
-            {[0, 1, 2].map(i => (
-                <motion.span
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full block"
-                    style={{ background: 'rgba(14,165,233,0.7)' }}
-                    animate={{ y: [0, -5, 0], opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15 }}
+            {[0, 1, 2].map((index) => (
+                <MotionSpan
+                    key={index}
+                    className="block h-1.5 w-1.5 rounded-2xl bg-[var(--brand-navy)]"
+                    animate={{ y: [0, -4, 0], opacity: [0.35, 1, 0.35] }}
+                    transition={{ duration: 0.7, repeat: Infinity, delay: index * 0.15 }}
                 />
             ))}
         </div>
@@ -44,19 +41,21 @@ export default function Chatbot() {
     const [events, setEvents] = useState([]);
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
+    const MotionDiv = motionLib.div;
+    const MotionButton = motionLib.button;
 
     useEffect(() => {
         if (initialGreeting) {
             const greeting = user
-                ? `Halo **${user.name}**! ⚡ Saya asisten BTIX.ID. Ada yang bisa saya bantu terkait event atau pembelian tiket?`
-                : 'Hei! ⚡ Saya asisten **BTIX.ID**. Ada yang bisa saya bantu terkait event atau tiket?';
+                ? `Halo ${user.name}! Saya asisten BTIX ID. Ada yang bisa saya bantu terkait event atau pembelian tiket?`
+                : 'Halo! Saya asisten BTIX ID. Ada yang bisa saya bantu terkait event atau tiket?';
             setMessages([{ role: 'assistant', content: greeting }]);
             setInitialGreeting(false);
         }
     }, [user, initialGreeting]);
 
     useEffect(() => {
-        api.get('/tickets').then((r) => setEvents(asArray(r.data))).catch(() => {});
+        api.get('/tickets').then((response) => setEvents(asArray(response.data))).catch(() => {});
     }, []);
 
     useEffect(() => {
@@ -70,11 +69,11 @@ export default function Chatbot() {
     const buildSystemMessage = () => {
         let content = SYSTEM_PROMPT;
         if (user) {
-            content += `\n\nInformasi pengguna saat ini:\n- Nama: ${user.name}\n- Email: ${user.email}\n- Status Membership: ${user.membership || 'Basic'}\n- Nomor Telepon: ${user.phone || 'Tidak tersedia'}`;
+            content += `\n\nInformasi pengguna saat ini:\n- Nama: ${user.name}\n- Email: ${user.email}`;
         }
         if (events.length > 0) {
-            const eventList = events.map(e =>
-                `- ${e.title} | Tanggal: ${new Date(e.event_date).toLocaleDateString('id-ID')} | Harga: Rp ${Number(e.price).toLocaleString('id-ID')} | Sisa Quota: ${e.quota}`
+            const eventList = events.map((event) =>
+                `- ${event.title} | Tanggal: ${new Date(event.event_date).toLocaleDateString('id-ID')} | Harga: Rp ${Number(event.price).toLocaleString('id-ID')} | Sisa Quota: ${event.quota}`
             ).join('\n');
             content += `\n\nDaftar event yang tersedia saat ini:\n${eventList}`;
         }
@@ -84,257 +83,156 @@ export default function Chatbot() {
     const sendMessage = async () => {
         const text = input.trim();
         if (!text || loading) return;
-        const userMsg = { role: 'user', content: text };
-        const newMessages = [...messages, userMsg];
+
+        const userMessage = { role: 'user', content: text };
+        const newMessages = [...messages, userMessage];
         setMessages(newMessages);
         setInput('');
         setLoading(true);
+
         try {
             const response = await api.post('/chatbot', {
                 system_prompt: buildSystemMessage().content,
-                messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+                messages: newMessages.map((message) => ({ role: message.role, content: message.content })),
             });
             const reply = response.data?.reply || 'Maaf, terjadi kesalahan. Coba lagi ya!';
-            setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+            setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
         } catch {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Koneksi bermasalah. Coba beberapa saat lagi.' }]);
+            setMessages((prev) => [...prev, { role: 'assistant', content: 'Koneksi bermasalah. Coba beberapa saat lagi.' }]);
         } finally {
             setLoading(false);
         }
     };
 
     const handleKey = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
     };
 
     return (
         <>
-            {/* ── Chat Window ─────────────────────────────── */}
             <AnimatePresence>
                 {open && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 24, scale: 0.94 }}
+                    <MotionDiv
+                        initial={{ opacity: 0, y: 24, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 24, scale: 0.94 }}
+                        exit={{ opacity: 0, y: 24, scale: 0.96 }}
                         transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                        className="fixed bottom-24 right-5 z-50 w-[360px] max-w-[calc(100vw-2rem)] flex flex-col overflow-hidden"
-                        style={{
-                            height: '520px',
-                            borderRadius: '1.5rem',
-                            background: 'rgba(4, 10, 25, 0.97)',
-                            backdropFilter: 'blur(30px)',
-                            border: '1px solid rgba(14,165,233,0.22)',
-                            boxShadow: '0 0 60px rgba(14,165,233,0.12), 0 30px 60px rgba(0,0,0,0.7)',
-                        }}
+                        className="fixed bottom-24 right-5 z-50 flex max-h-[80vh] w-[360px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-[rgba(13,43,87,0.10)] bg-[rgba(255,253,248,0.97)] shadow-[0_28px_70px_rgba(16,39,74,0.18)]"
+                        style={{ backdropFilter: 'blur(18px)' }}
                     >
-                        {/* Top accent line */}
-                        <div className="absolute top-0 left-0 right-0 h-px"
-                            style={{ background: 'linear-gradient(90deg, transparent, rgba(14,165,233,0.7), transparent)' }} />
-
-                        {/* ── Header ── */}
-                        <div className="flex items-center gap-3 px-5 py-4 flex-shrink-0"
-                            style={{
-                                background: 'rgba(6,15,35,0.9)',
-                                borderBottom: '1px solid rgba(14,165,233,0.12)',
-                            }}>
-                            {/* AI Avatar */}
-                            <div className="relative shrink-0">
-                                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-black text-xs font-black"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #00d4ff, #0ea5e9)',
-                                        boxShadow: '0 0 14px rgba(14,165,233,0.5)',
-                                    }}>
-                                    AI
-                                </div>
-                                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2"
-                                    style={{ background: '#10b981', borderColor: '#040a19', boxShadow: '0 0 6px rgba(16,185,129,0.8)' }} />
+                        <div className="flex items-center gap-3 border-b border-[rgba(13,43,87,0.08)] bg-[rgba(13,43,87,0.03)] px-5 py-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-navy)] text-xs font-extrabold text-white">
+                                AI
                             </div>
-
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-black text-white leading-none" style={{ fontFamily: 'Orbitron, monospace', letterSpacing: '0.05em' }}>
-                                    BTIX.ID AI
+                            <div className="min-w-0 flex-1">
+                                <p className="font-sans text-xl font-extrabold uppercase leading-none text-[var(--brand-navy)]">
+                                    Tix Assistant
                                 </p>
-                                <p className="text-[11px] mt-0.5 font-mono" style={{ color: 'rgba(14,165,233,0.7)' }}>
-                                    {user ? `● ${user.name}` : '● Online — Siap membantu'}
+                                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                                    {user ? user.name : 'Online'}
                                 </p>
                             </div>
-
-                            <button
-                                onClick={() => setOpen(false)}
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all"
-                            >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                            <button type="button" onClick={() => setOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--brand-navy)] hover:bg-[rgba(13,43,87,0.06)]">
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
 
-                        {/* ── Messages ── */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-3"
-                            style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(14,165,233,0.2) transparent' }}>
-                            {messages.map((msg, i) => (
-                                <motion.div
-                                    key={i}
+                        <div className="flex-1 space-y-3 overflow-y-auto p-4">
+                            {messages.map((message, index) => (
+                                <MotionDiv
+                                    key={index}
                                     initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
-                                    {/* AI avatar */}
-                                    {msg.role === 'assistant' && (
-                                        <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] text-black font-black shrink-0 mb-0.5"
-                                            style={{ background: 'linear-gradient(135deg, #00d4ff, #0ea5e9)', boxShadow: '0 0 8px rgba(14,165,233,0.4)' }}>
-                                            AI
-                                        </div>
-                                    )}
-
-                                    <div
-                                        className="max-w-[78%] px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap"
-                                        style={msg.role === 'user' ? {
-                                            background: 'linear-gradient(135deg, rgba(14,165,233,0.25), rgba(56,189,248,0.15))',
-                                            border: '1px solid rgba(14,165,233,0.35)',
-                                            borderRadius: '16px 16px 4px 16px',
-                                            color: '#e2e8f0',
-                                            boxShadow: '0 0 12px rgba(14,165,233,0.08)',
-                                        } : {
-                                            background: 'rgba(14,20,45,0.9)',
-                                            border: '1px solid rgba(14,165,233,0.15)',
-                                            borderRadius: '16px 16px 16px 4px',
-                                            color: '#cbd5e1',
-                                        }}
-                                    >
-                                        {msg.content}
+                                    <div className={`max-w-[82%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-7 ${
+                                        message.role === 'user'
+                                            ? 'bg-[var(--brand-navy)] text-white'
+                                            : 'bg-white text-[var(--brand-navy)] border border-[rgba(13,43,87,0.08)]'
+                                    }`}>
+                                        {message.content}
                                     </div>
-                                </motion.div>
+                                </MotionDiv>
                             ))}
 
-                            {/* Typing indicator */}
                             {loading && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 8 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="flex items-end gap-2 justify-start"
-                                >
-                                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] text-black font-black shrink-0"
-                                        style={{ background: 'linear-gradient(135deg, #00d4ff, #0ea5e9)', boxShadow: '0 0 8px rgba(14,165,233,0.4)' }}>
-                                        AI
-                                    </div>
-                                    <div className="px-3.5 py-2.5 rounded-2xl rounded-bl-sm"
-                                        style={{ background: 'rgba(14,20,45,0.9)', border: '1px solid rgba(14,165,233,0.15)' }}>
+                                <MotionDiv initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
+                                    <div className="rounded-2xl border border-[rgba(13,43,87,0.08)] bg-white px-4 py-3">
                                         <TypingDots />
                                     </div>
-                                </motion.div>
+                                </MotionDiv>
                             )}
                             <div ref={bottomRef} />
                         </div>
 
-                        {/* ── Input ── */}
-                        <div className="flex-shrink-0 px-3 py-3"
-                            style={{ borderTop: '1px solid rgba(14,165,233,0.1)', background: 'rgba(4,10,25,0.95)' }}>
-                            <div className="flex items-end gap-2 px-3 py-2 rounded-xl transition-all"
-                                style={{
-                                    background: 'rgba(14,165,233,0.05)',
-                                    border: '1px solid rgba(14,165,233,0.18)',
-                                }}>
+                        <div className="border-t border-[rgba(13,43,87,0.08)] bg-white px-3 py-3">
+                            <div className="flex items-end gap-2 rounded-2xl border border-[rgba(13,43,87,0.10)] bg-[rgba(13,43,87,0.03)] px-3 py-2">
                                 <textarea
                                     ref={inputRef}
                                     rows={1}
                                     value={input}
-                                    onChange={e => setInput(e.target.value)}
+                                    onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={handleKey}
-                                    placeholder="Ketik pesan..."
-                                    className="flex-1 bg-transparent border-none outline-none text-sm leading-relaxed py-0.5 resize-none max-h-24"
-                                    style={{
-                                        color: '#e2e8f0',
-                                        scrollbarWidth: 'none',
-                                    }}
+                                    placeholder="Tulis pertanyaan..."
+                                    className="max-h-24 flex-1 resize-none border-none bg-transparent py-1 text-sm leading-relaxed outline-none"
+                                    style={{ color: '#22304a', scrollbarWidth: 'none' }}
                                 />
                                 <button
+                                    type="button"
                                     onClick={sendMessage}
                                     disabled={!input.trim() || loading}
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #00d4ff, #0ea5e9)',
-                                        boxShadow: input.trim() ? '0 0 14px rgba(14,165,233,0.5)' : 'none',
-                                    }}
+                                    className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-gold)] text-[var(--brand-navy)] disabled:opacity-40"
                                 >
-                                    <svg className="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
+                                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" /></svg>
                                 </button>
                             </div>
-                            <p className="text-[10px] text-center mt-1.5 font-mono tracking-wider"
-                                style={{ color: 'rgba(14,165,233,0.3)' }}>
-                                POWERED BY GROQ · LLAMA 3.3 70B
+                            <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                                Powered by Bangsa Tix AI
                             </p>
                         </div>
-
-                        {/* Corner accents */}
-                        <div className="absolute bottom-0 left-0 right-0 h-px"
-                            style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent)' }} />
-                    </motion.div>
+                    </MotionDiv>
                 )}
             </AnimatePresence>
 
-            {/* ── Floating Button ─────────────────────────── */}
-            <motion.button
-                onClick={() => setOpen(o => !o)}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.93 }}
-                className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-2xl flex items-center justify-center"
+            <MotionButton
+                type="button"
+                onClick={() => setOpen((value) => !value)}
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+                className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-[0_18px_40px_rgba(16,39,74,0.22)]"
                 style={{
-                    background: open
-                        ? 'rgba(6,15,35,0.95)'
-                        : 'linear-gradient(135deg, #00d4ff, #0ea5e9)',
-                    border: open
-                        ? '1px solid rgba(14,165,233,0.3)'
-                        : 'none',
-                    boxShadow: open
-                        ? '0 0 20px rgba(14,165,233,0.2)'
-                        : '0 0 25px rgba(14,165,233,0.55), 0 8px 20px rgba(0,0,0,0.5)',
-                    color: open ? '#0ea5e9' : '#000',
+                    background: open ? 'var(--brand-navy)' : 'linear-gradient(180deg, var(--brand-gold-soft) 0%, var(--brand-gold) 100%)',
+                    color: open ? '#fff' : 'var(--brand-navy)',
                 }}
                 aria-label="Open AI Chatbot"
             >
                 <AnimatePresence mode="wait" initial={false}>
                     {open ? (
-                        <motion.svg
+                        <MotionDiv
                             key="close"
                             initial={{ rotate: -90, opacity: 0 }}
                             animate={{ rotate: 0, opacity: 1 }}
                             exit={{ rotate: 90, opacity: 0 }}
-                            transition={{ duration: 0.18 }}
-                            className="w-5 h-5"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            className="flex"
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                        </motion.svg>
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </MotionDiv>
                     ) : (
-                        <motion.svg
+                        <MotionDiv
                             key="chat"
                             initial={{ rotate: 90, opacity: 0, scale: 0.8 }}
                             animate={{ rotate: 0, opacity: 1, scale: 1 }}
                             exit={{ rotate: -90, opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.18 }}
-                            className="w-6 h-6"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            className="flex"
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </motion.svg>
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                        </MotionDiv>
                     )}
                 </AnimatePresence>
-
-                {/* Pulse ring — only when closed */}
-                {!open && (
-                    <motion.span
-                        className="absolute inset-0 rounded-2xl -z-10"
-                        style={{ background: 'rgba(14,165,233,0.5)' }}
-                        animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0, 0.4] }}
-                        transition={{ duration: 2.5, repeat: Infinity }}
-                    />
-                )}
-            </motion.button>
+            </MotionButton>
         </>
     );
 }

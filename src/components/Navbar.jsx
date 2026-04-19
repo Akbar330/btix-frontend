@@ -1,398 +1,345 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion as motionLib } from 'framer-motion';
 
-const Icons = {
-    Home: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-    ),
-    Ticket: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-        </svg>
-    ),
-    Dashboard: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-        </svg>
-    ),
-    Scanner: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10V5a2 2 0 012-2h5m4 0h5a2 2 0 012 2v5m-18 4v5a2 2 0 002 2h5m4 0h5a2 2 0 002-2v-5" />
-        </svg>
-    ),
-    Logout: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-    ),
-    Membership: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-        </svg>
-    ),
-    Back: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-        </svg>
-    ),
-    ChevronDown: () => (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-3 h-3">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-        </svg>
-    ),
+const SocialIcon = ({ path }) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+        <path d={path} />
+    </svg>
+);
+
+const socialIcons = {
+    instagram: 'M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5Zm8.75 1.75a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM12 6.25A5.75 5.75 0 1 1 6.25 12 5.76 5.76 0 0 1 12 6.25Zm0 1.5A4.25 4.25 0 1 0 16.25 12 4.25 4.25 0 0 0 12 7.75Z',
+    youtube: 'M21.58 7.19a2.93 2.93 0 0 0-2.06-2.07C17.66 4.6 12 4.6 12 4.6s-5.66 0-7.52.52A2.93 2.93 0 0 0 2.42 7.2 30.67 30.67 0 0 0 2 12a30.67 30.67 0 0 0 .42 4.81 2.93 2.93 0 0 0 2.06 2.07c1.86.52 7.52.52 7.52.52s5.66 0 7.52-.52a2.93 2.93 0 0 0 2.06-2.07A30.67 30.67 0 0 0 22 12a30.67 30.67 0 0 0-.42-4.81ZM10 15.5v-7l6 3.5Z',
+    facebook: 'M13.5 22v-8.2h2.77l.42-3.2H13.5V8.56c0-.93.27-1.56 1.62-1.56h1.73V4.13A23.38 23.38 0 0 0 14.3 4c-2.52 0-4.25 1.54-4.25 4.37v2.43H7.2v3.2h2.85V22Z',
+    twitter: 'M21.5 6.52a6.9 6.9 0 0 1-1.98.54 3.45 3.45 0 0 0 1.51-1.9 6.88 6.88 0 0 1-2.18.83 3.44 3.44 0 0 0-5.86 3.14 9.75 9.75 0 0 1-7.08-3.58 3.44 3.44 0 0 0 1.06 4.59 3.4 3.4 0 0 1-1.56-.43v.05a3.44 3.44 0 0 0 2.76 3.37 3.45 3.45 0 0 1-1.55.06 3.44 3.44 0 0 0 3.21 2.38A6.9 6.9 0 0 1 4.5 17a9.73 9.73 0 0 0 5.27 1.54c6.33 0 9.79-5.24 9.79-9.79l-.01-.45A6.97 6.97 0 0 0 21.5 6.52Z',
 };
 
-const PremiumBadge = ({ label }) => (
-    <span className="badge-premium-gold">
-        <svg className="w-2.5 h-2.5 relative z-10" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-        <span className="relative z-10">{label}</span>
-    </span>
-);
+const navLinks = [
+    { label: 'HOME', href: '/' },
+    { label: 'MY TICKET', href: '/history' },
+    { label: 'EXPLORE', href: '/#discover' },
+];
+
+function Brand() {
+    return (
+        <Link to="/" className="tix-brand text-[2rem] sm:text-[2.6rem] leading-none flex items-center">
+            BTIX.ID
+        </Link>
+    );
+}
+
+function PremiumBadge({ label }) {
+    return (
+        <span className="badge-premium-gold">
+            <svg className="h-2.5 w-2.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            {label}
+        </span>
+    );
+}
 
 export default function Navbar() {
     const { user, logout } = useAuth();
-    const navigate = useNavigate();
     const location = useLocation();
-    const [scrolled, setScrolled] = useState(false);
+    const navigate = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const isHome = location.pathname === '/';
-    const membership = user?.membership || 'basic';
-    const membershipLabel = typeof membership === 'string' ? membership.toUpperCase() : 'BASIC';
-    const isPremium = membership !== 'basic';
+    const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 10);
+        const handleScroll = () => setScrolled(window.scrollY > 20);
+        handleScroll();
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
+    const MotionDiv = motionLib.div;
+
+    const closeMenus = () => {
         setMobileMenuOpen(false);
         setUserMenuOpen(false);
-    }, [location.pathname]);
+    };
+
+    const jumpToSection = (href) => {
+        closeMenus();
+
+        if (!href.includes('#')) {
+            navigate(href);
+            return;
+        }
+
+        const [pathname, hash] = href.split('#');
+        const targetPath = pathname || '/';
+
+        if (location.pathname !== targetPath) {
+            navigate(href);
+            return;
+        }
+
+        const element = document.getElementById(hash);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
 
     const handleLogout = async () => {
+        closeMenus();
         await logout();
         navigate('/login');
     };
 
-    const isActive = (path) => location.pathname === path;
-
-    const NavItem = ({ to, icon: Icon, label, highlight }) => {
-        const active = isActive(to);
-        if (highlight) {
-            return (
-                <Link
-                    to={to}
-                    className={`relative flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg text-black cyber-btn
-                        bg-gradient-to-r from-cyan-400 to-sky-500
-                        hover:from-cyan-300 hover:to-sky-400
-                        shadow-[0_0_15px_rgba(14,165,233,0.4)]
-                        hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]
-                        transition-all duration-200
-                        ${active ? 'ring-2 ring-cyan-400/60' : ''}`}
-                >
-                    {Icon && <Icon />}
-                    {label}
-                </Link>
-            );
-        }
-        return (
-            <Link
-                to={to}
-                className={`relative flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200
-                    ${active
-                        ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/20'
-                        : 'text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/8'
-                    }`}
-            >
-                {Icon && <Icon />}
-                {label}
-                {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-cyan-400 rounded-full shadow-[0_0_6px_rgba(14,165,233,0.8)]" />
-                )}
-            </Link>
-        );
-    };
-
     return (
-        <>
-            {/* Top accent line */}
-            <div className="fixed top-0 left-0 right-0 h-[2px] z-[100] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
+        <header className="fixed inset-x-0 top-0 z-50">
+            <div
+                className={`w-full transition-all duration-300 bg-white ${
+                    scrolled ? 'shadow-md shadow-[rgba(16,39,74,0.08)]' : ''
+                }`}
+            >
+                <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-4 px-5 py-5 md:px-8 md:py-5">
+                    <Brand />
 
-            <nav className={`fixed top-[2px] left-0 right-0 z-50 transition-all duration-500 ${
-                scrolled
-                    ? 'bg-[#020817]/95 backdrop-blur-xl border-b border-cyan-500/15 shadow-[0_4px_30px_rgba(14,165,233,0.08)]'
-                    : 'bg-[#020817]/80 backdrop-blur-md border-b border-white/5'
-            }`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center h-[72px] gap-3">
+                    <div className="hidden items-center justify-end flex-1 gap-6 lg:flex xl:gap-8">
+                        <nav className="flex items-center gap-6 xl:gap-8 mr-2">
+                            {navLinks.map((item) => {
+                                return (
+                                    <button
+                                        key={item.label}
+                                        type="button"
+                                        onClick={() => jumpToSection(item.href)}
+                                        className="text-[0.8rem] xl:text-[0.85rem] font-bold tracking-[0.05em] text-black transition hover:text-[var(--brand-gold)]"
+                                    >
+                                        {item.label}
+                                    </button>
+                                );
+                            })}
+                        </nav>
 
-                        {/* Back Button */}
-                        {!isHome && (
-                            <motion.button
-                                initial={{ opacity: 0, x: -8 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                onClick={() => navigate(-1)}
-                                className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-cyan-400/10 text-slate-400 hover:text-cyan-400 border border-slate-700 hover:border-cyan-400/30 transition-all shrink-0"
-                                aria-label="Go back"
-                            >
-                                <Icons.Back />
-                            </motion.button>
-                        )}
-
-                        {/* Logo */}
-                        <Link to="/" className="flex items-center gap-3 shrink-0 group">
-                            <div className="relative w-9 h-9 rounded-lg flex items-center justify-center text-black font-black text-sm shadow-lg transition-all duration-300
-                                bg-gradient-to-br from-cyan-400 to-sky-500
-                                shadow-[0_0_15px_rgba(14,165,233,0.4)]
-                                group-hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]
-                                group-hover:scale-105">
-                                B
-                                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border border-[#020817] shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
-                            </div>
-
-                            <span className="font-black tracking-tight">
-                                <span className="sm:hidden text-lg text-white">BTIX</span>
-                                <span className="hidden sm:inline text-xl">
-                                    <span className="text-gradient-cyan">BTIX</span>
-                                    <span className="text-slate-400"> ID</span>
-                                </span>
-                            </span>
-                        </Link>
-
-                        {/* Separator */}
-                        <div className="hidden md:block h-5 w-px bg-slate-700/60 mx-1" />
-
-                        {/* Center Nav Links */}
-                        <div className="hidden md:flex items-center gap-0.5">
-                            <NavItem to="/" icon={Icons.Home} label="Home" />
-
-                            {user && (
-                                <>
-                                    <NavItem to="/history" icon={Icons.Ticket} label="Tiket Saya" />
-                                    <NavItem to="/membership" icon={Icons.Membership} label="Membership" />
-                                </>
-                            )}
-
-                            {user?.role === 'admin' && (
-                                <>
-                                    <NavItem to="/admin" icon={Icons.Dashboard} label="Dashboard" />
-                                    <NavItem to="/admin/scanner" icon={Icons.Scanner} label="Scanner" highlight />
-                                </>
-                            )}
+                        <div className="flex items-center gap-4 text-[var(--brand-navy)] mr-2">
+                            {Object.entries(socialIcons).map(([name, path]) => (
+                                <a
+                                    key={name}
+                                    href="#"
+                                    aria-label={name}
+                                    className="h-4 w-4 transition hover:scale-110 hover:text-[var(--brand-gold)]"
+                                >
+                                    <SocialIcon path={path} />
+                                </a>
+                            ))}
                         </div>
 
-                        {/* Spacer */}
-                        <div className="flex-1" />
-
-                        {/* Right: user actions */}
-                        <div className="hidden md:flex items-center gap-2">
-                            {user ? (
-                                <div className="relative">
+                        {user ? (
+                            <div className="relative">
+                                {/* The container that becomes integrated when open */}
+                                <div className={`relative transition-all duration-300 ${userMenuOpen ? 'bg-white shadow-[0_4px_30px_rgba(13,43,87,0.08)] rounded-[24px_24px_0_0]' : ''}`}>
                                     <button
-                                        onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-xl
-                                            bg-slate-800/70 hover:bg-slate-700/80
-                                            border border-slate-700/80 hover:border-cyan-400/30
-                                            transition-all duration-200 group"
+                                        type="button"
+                                        onClick={() => setUserMenuOpen((value) => !value)}
+                                        className={`flex items-center gap-3 px-3 py-2 transition-all duration-300 rounded-[24px] ${
+                                            userMenuOpen ? 'bg-white' : 'hover:bg-slate-50 active:bg-slate-100'
+                                        }`}
                                     >
-                                        {/* Avatar */}
-                                        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-black text-xs font-black uppercase shadow-sm
-                                            bg-gradient-to-br from-cyan-400 to-sky-500
-                                            shadow-[0_0_10px_rgba(14,165,233,0.3)]">
-                                            {user.name.charAt(0)}
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-navy)] text-xs font-extrabold text-white shadow-sm">
+                                            {user.name?.charAt(0) || 'U'}
                                         </div>
-                                        <div className="text-left leading-none">
-                                            <div className="flex items-center gap-1.5">
-                                                <p className="text-sm font-bold text-slate-200">{user.name.split(' ')[0]}</p>
-                                                {isPremium && <PremiumBadge label={membershipLabel} />}
+                                        <div className="text-left leading-tight hidden xl:block">
+                                            <div className="text-[0.75rem] font-extrabold uppercase tracking-[0.12em] text-[var(--brand-navy)]">
+                                                {user.name?.split(' ')[0] || 'Member'}
                                             </div>
-                                            <p className="text-[10px] text-slate-500 font-medium mt-0.5">Lihat Profil</p>
+                                            <div className="text-[0.65rem] font-semibold text-[var(--text-muted)]">
+                                                Account Settings
+                                            </div>
                                         </div>
-                                        <span className={`transition-transform duration-200 text-slate-500 ${userMenuOpen ? 'rotate-180' : ''}`}>
-                                            <Icons.ChevronDown />
-                                        </span>
+                                        <svg 
+                                            className={`w-4 h-4 text-[var(--text-muted)] transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                        </svg>
                                     </button>
 
                                     <AnimatePresence>
                                         {userMenuOpen && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                exit={{ opacity: 0, y: 4, scale: 0.97 }}
-                                                transition={{ duration: 0.15 }}
-                                                className="absolute right-0 top-full mt-2 w-56 rounded-xl overflow-hidden z-50
-                                                    bg-[#060f1e]/95 backdrop-blur-xl
-                                                    border border-cyan-500/15
-                                                    shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_20px_rgba(14,165,233,0.05)]"
+                                            <MotionDiv
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.25, ease: "easeInOut" }}
+                                                className="absolute right-0 top-full w-64 overflow-hidden rounded-[0_0_24px_24px] bg-white shadow-[0_15px_30px_rgba(13,43,87,0.08)]"
                                             >
-                                                {/* Header */}
-                                                <div className="px-4 py-3 border-b border-slate-700/50 bg-slate-800/30">
-                                                    <p className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Logged in as</p>
-                                                    <p className="text-sm font-bold text-slate-200 truncate mt-0.5">{user.email}</p>
-                                                    {isPremium && (
-                                                        <div className="mt-2">
-                                                            <PremiumBadge label={`✦ ${membershipLabel} Member`} />
-                                                        </div>
-                                                    )}
+                                                <div className="px-2 pb-2">
+                                                    <div className="mb-1 rounded-[18px] bg-[rgba(13,43,87,0.025)] px-4 py-4">
+                                                        <p className="text-[0.6rem] font-black uppercase tracking-[0.25em] text-[var(--brand-gold)]">
+                                                            Account Info
+                                                        </p>
+                                                        <p className="mt-1.5 truncate text-sm font-extrabold text-[var(--brand-navy)]">
+                                                            {user.name}
+                                                        </p>
+                                                        <p className="mt-0.5 truncate text-[0.7rem] font-semibold text-[var(--text-muted)]">
+                                                            {user.email}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="grid gap-0.5">
+                                                        <Link
+                                                            to="/history"
+                                                            onClick={closeMenus}
+                                                            className="flex items-center gap-3 rounded-[16px] px-3.5 py-3 text-sm font-bold text-[var(--brand-navy)] transition-all hover:bg-[rgba(13,43,87,0.04)] group"
+                                                        >
+                                                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white shadow-sm border border-[rgba(13,43,87,0.04)]">
+                                                                <svg className="w-4 h-4 text-[var(--brand-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                                            </div>
+                                                            Tiket Saya
+                                                        </Link>
+                                                        
+                                                        {user.role === 'admin' && (
+                                                            <Link
+                                                                to="/admin"
+                                                                onClick={closeMenus}
+                                                                className="flex items-center gap-3 rounded-[16px] px-3.5 py-3 text-sm font-bold text-[var(--brand-navy)] transition-all hover:bg-[rgba(13,43,87,0.04)] group"
+                                                            >
+                                                                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white shadow-sm border border-[rgba(13,43,87,0.04)]">
+                                                                    <svg className="w-4 h-4 text-[var(--brand-navy)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                                </div>
+                                                                Admin Dashboard
+                                                            </Link>
+                                                        )}
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleLogout}
+                                                            className="flex items-center gap-3 rounded-[16px] px-3.5 py-3 text-sm font-bold text-rose-600 transition-all hover:bg-rose-50"
+                                                        >
+                                                            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white shadow-sm border border-rose-100">
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                                            </div>
+                                                            Keluar
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="p-1.5">
-                                                    <Link
-                                                        to="/membership"
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-cyan-400/8 hover:text-cyan-300 rounded-lg transition-colors"
-                                                    >
-                                                        <Icons.Membership />
-                                                        Langganan
-                                                    </Link>
-                                                    <button
-                                                        onClick={handleLogout}
-                                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-lg transition-colors"
-                                                    >
-                                                        <Icons.Logout />
-                                                        Keluar
-                                                    </button>
-                                                </div>
-                                                {/* bottom accent */}
-                                                <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-                                            </motion.div>
+                                            </MotionDiv>
                                         )}
                                     </AnimatePresence>
                                 </div>
-                            ) : (
-                                <>
-                                    <Link to="/login" className="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-cyan-300 hover:bg-cyan-400/8 rounded-xl transition-all">
-                                        Masuk
-                                    </Link>
-                                    <Link
-                                        to="/register"
-                                        className="px-5 py-2 text-sm font-bold text-black rounded-xl cyber-btn
-                                            bg-gradient-to-r from-cyan-400 to-sky-500
-                                            shadow-[0_0_15px_rgba(14,165,233,0.4)]
-                                            hover:shadow-[0_0_25px_rgba(14,165,233,0.6)]"
-                                    >
-                                        Daftar Sekarang
-                                    </Link>
-                                </>
-                            )}
-                        </div>
+                            </div>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="tix-pill-button px-8 py-2.5 text-[0.8rem] whitespace-nowrap hidden lg:block"
+                            >
+                                LOGIN
+                            </Link>
+                        )}
 
-                        {/* Mobile hamburger */}
-                        <button
-                            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-slate-800/70 hover:bg-slate-700 text-slate-400 hover:text-cyan-300 border border-slate-700 transition-all"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            aria-label="Menu"
-                        >
-                            <AnimatePresence mode="wait" initial={false}>
-                                {mobileMenuOpen ? (
-                                    <motion.svg key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }} className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </motion.svg>
-                                ) : (
-                                    <motion.svg key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }} className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                    </motion.svg>
-                                )}
-                            </AnimatePresence>
-                        </button>
+                        {user?.role === 'admin' && (
+                            <Link to="/admin/scanner" className="tix-pill-button px-5 py-2.5 text-sm hidden lg:block">
+                                Scanner
+                            </Link>
+                        )}
                     </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setMobileMenuOpen((value) => !value)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(13,43,87,0.08)] bg-white text-[var(--brand-navy)] shadow-[0_10px_24px_rgba(16,39,74,0.08)] md:hidden"
+                        aria-label="Toggle navigation"
+                    >
+                        <div className="grid gap-1">
+                            <span className="block h-0.5 w-5 rounded-2xl bg-current" />
+                            <span className="block h-0.5 w-5 rounded-2xl bg-current" />
+                            <span className="block h-0.5 w-5 rounded-2xl bg-current" />
+                        </div>
+                    </button>
                 </div>
 
-                {/* Mobile Menu */}
                 <AnimatePresence>
                     {mobileMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="md:hidden border-t border-slate-700/50 bg-[#060f1e]/98 backdrop-blur-xl overflow-hidden"
-                        >
-                            <div className="px-4 pt-3 pb-4 space-y-1">
-                                {[
-                                    { to: '/', icon: Icons.Home, label: 'Home', show: true },
-                                    { to: '/history', icon: Icons.Ticket, label: 'Tiket Saya', show: !!user },
-                                    { to: '/membership', icon: Icons.Membership, label: 'Upgrade Membership', show: !!user },
-                                    { to: '/admin', icon: Icons.Dashboard, label: 'Admin Dashboard', show: user?.role === 'admin' },
-                                ].filter(item => item.show).map(({ to, icon: Icon, label }) => (
-                                    <Link
-                                        key={to}
-                                        to={to}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive(to)
-                                            ? 'bg-cyan-400/10 text-cyan-400 border border-cyan-400/20'
-                                            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                                        }`}
-                                    >
-                                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center ${isActive(to) ? 'bg-cyan-400/15 text-cyan-400' : 'bg-slate-800 text-slate-500'}`}>
-                                            <Icon />
-                                        </span>
-                                        {label}
-                                    </Link>
-                                ))}
+                        <>
+                            <MotionDiv
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={closeMenus}
+                                className="fixed inset-0 z-[60] bg-[rgba(13,43,87,0.4)] backdrop-blur-sm md:hidden"
+                                style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, margin: 0, height: '100vh', width: '100vw' }}
+                            />
+                            <MotionDiv
+                                initial={{ x: '100%' }}
+                                animate={{ x: 0 }}
+                                exit={{ x: '100%' }}
+                                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                className="fixed inset-y-0 right-0 z-[70] w-72 bg-[rgba(255,253,248,0.98)] shadow-2xl md:hidden flex flex-col"
+                                style={{ position: 'fixed', top: 0, right: 0, bottom: 0, margin: 0, height: '100vh' }}
+                            >
+                                <div className="flex items-center justify-between p-5 border-b border-[rgba(13,43,87,0.08)]">
+                                    <div className="tix-brand text-lg leading-none">
+                                        BANGSA TIX<span className="tix-brand-mark" />ID
+                                    </div>
+                                    <button onClick={closeMenus} className="p-2 text-[var(--brand-navy)] rounded-2xl hover:bg-[rgba(13,43,87,0.05)]">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto px-5 py-6 grid auto-rows-max">
+                                    {navLinks.map((item) => (
+                                        <button
+                                            key={item.label}
+                                            type="button"
+                                            onClick={() => jumpToSection(item.href)}
+                                            className="px-2 py-4 text-left text-sm font-extrabold tracking-[0.12em] text-black border-b border-[rgba(13,43,87,0.06)] last:border-0"
+                                        >
+                                            {item.label}
+                                        </button>
+                                    ))}
 
-                                {user?.role === 'admin' && (
-                                    <Link
-                                        to="/admin/scanner"
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-black
-                                            bg-gradient-to-r from-cyan-400 to-sky-500
-                                            shadow-[0_0_15px_rgba(14,165,233,0.3)]"
-                                    >
-                                        <span className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center">
-                                            <Icons.Scanner />
-                                        </span>
-                                        Scan Tiket
-                                    </Link>
-                                )}
-
-                                <div className="pt-3 mt-2 border-t border-slate-700/50">
                                     {user ? (
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
-                                                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-black font-black shadow-sm
-                                                    bg-gradient-to-br from-cyan-400 to-sky-500">
-                                                    {user.name.charAt(0)}
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-bold text-slate-200">{user.name}</p>
-                                                    <p className="text-xs text-slate-500">{user.email}</p>
-                                                    {isPremium && <div className="mt-1"><PremiumBadge label={membershipLabel} /></div>}
-                                                </div>
+                                        <div className="mt-4 border-t border-[rgba(13,43,87,0.08)] grid">
+                                            <div className="px-2 mb-2">
+                                                <p className="text-xs text-[var(--text-muted)]">Signed in as</p>
+                                                <p className="font-bold text-[var(--brand-navy)] truncate">{user.email}</p>
                                             </div>
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10 border border-slate-700/50 hover:border-rose-500/20 transition-all"
+                                            <Link
+                                                to="/history"
+                                                onClick={closeMenus}
+                                                className="px-2 py-4 text-sm font-extrabold text-[var(--brand-navy)] border-b border-[rgba(13,43,87,0.06)]"
                                             >
-                                                <span className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
-                                                    <Icons.Logout />
-                                                </span>
+                                                Tiket Saya
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={handleLogout}
+                                                className="px-2 py-5 text-left text-sm font-extrabold text-rose-600"
+                                            >
                                                 Keluar
                                             </button>
                                         </div>
                                     ) : (
-                                        <div className="flex gap-2">
-                                            <Link to="/login" className="flex-1 text-center px-4 py-3 text-sm font-semibold text-slate-400 border border-slate-700 rounded-xl hover:bg-slate-800 transition-all">
-                                                Masuk
+                                        <div className="mt-4 border-t border-[rgba(13,43,87,0.08)] grid">
+                                            <Link
+                                                to="/login"
+                                                onClick={closeMenus}
+                                                className="px-2 py-4 text-sm font-extrabold text-[var(--brand-navy)] border-b border-[rgba(13,43,87,0.06)]"
+                                            >
+                                                Login
                                             </Link>
-                                            <Link to="/register" className="flex-1 text-center px-4 py-3 text-sm font-bold text-black rounded-xl
-                                                bg-gradient-to-r from-cyan-400 to-sky-500
-                                                shadow-[0_0_12px_rgba(14,165,233,0.3)]">
-                                                Daftar
+                                            <Link
+                                                to="/register"
+                                                onClick={closeMenus}
+                                                className="px-2 py-5 text-sm font-extrabold text-[var(--brand-gold)]"
+                                            >
+                                                Register
                                             </Link>
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        </motion.div>
+                            </MotionDiv>
+                        </>
                     )}
                 </AnimatePresence>
-            </nav>
-        </>
+            </div>
+        </header>
     );
 }

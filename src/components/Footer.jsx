@@ -1,31 +1,23 @@
 export default function Footer() {
     return (
-        <footer style={{
-            background: 'rgba(6,15,35,0.8)',
-            borderTop: '1px solid rgba(14,165,233,0.1)',
-            backdropFilter: 'blur(10px)',
-        }}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-black font-black text-sm"
-                            style={{ background: 'linear-gradient(135deg, #00d4ff, #0ea5e9)', boxShadow: '0 0 12px rgba(14,165,233,0.4)' }}>
-                            B
-                        </div>
-                        <span className="font-black text-slate-400">
-                            <span style={{ color: '#00d4ff' }}>BTIX</span> ID
-                        </span>
+        <footer className="mt-20 border-t border-[rgba(13,43,87,0.08)] bg-[rgba(255,253,248,0.94)]">
+            <div className="tix-container flex flex-col gap-6 px-1 py-10 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <div className="tix-brand text-[2.2rem] leading-none">
+                        BANGSA TIX<span className="tix-brand-mark" />ID
                     </div>
-                    <p className="text-slate-600 text-xs font-mono tracking-widest">
-                        © 2026 BTIX.ID // ALL RIGHTS RESERVED
+                    <p className="mt-3 max-w-md text-sm leading-7 text-[var(--text-muted)]">
+                        Platform tiket dengan tampilan yang lebih bersih, editorial, dan modern, terinspirasi dari gaya visual TIX.ID pada referensi.
                     </p>
-                    <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
-                            style={{ boxShadow: '0 0 6px rgba(16,185,129,0.8)' }} />
-                        <span className="text-xs text-slate-600 font-mono tracking-wider">SYSTEM ONLINE</span>
-                    </div>
                 </div>
-                <div className="mt-6 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+
+                <div className="grid gap-2 text-sm text-[var(--text-muted)] md:text-right">
+                    <p className="font-bold uppercase tracking-[0.16em] text-[var(--brand-navy)]">
+                        Bangsa TIX ID
+                    </p>
+                    <p>© 2026 All rights reserved.</p>
+                    <p>Designed with navy, gold, and clean cinematic layout.</p>
+                </div>
             </div>
         </footer>
     );

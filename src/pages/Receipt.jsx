@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { asArray } from '../utils/api';
-import Navbar from '../components/Navbar';
-import { motion } from 'framer-motion';
+import { LoadingScreen, PageHero, FlatCard } from '../components/TixUI';
 
 export default function Receipt() {
     const { id } = useParams();
@@ -14,13 +13,10 @@ export default function Receipt() {
         const fetchTransaction = async () => {
             try {
                 const response = await api.get('/transactions');
-                const t = asArray(response.data).find(item => item.id == id);
-                if (t && t.payment_status === 'success') {
-                    setTransaction(t);
-                    // Trigger print after data is loaded
-                    setTimeout(() => {
-                        window.print();
-                    }, 800);
+                const current = asArray(response.data).find((item) => item.id == id);
+                if (current && current.payment_status === 'success') {
+                    setTransaction(current);
+                    setTimeout(() => window.print(), 800);
                 } else {
                     navigate('/history');
                 }
@@ -34,114 +30,87 @@ export default function Receipt() {
         fetchTransaction();
     }, [id, navigate]);
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-        </div>
-    );
-
+    if (loading) return <LoadingScreen label="Menyiapkan struk pembayaran..." />;
     if (!transaction) return null;
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans print:bg-white print:p-0 flex flex-col items-center">
-            <Navbar />
+        <div className="page-shell min-h-screen print:bg-white">
+            
 
-            <div className="pt-32 pb-20 w-full max-w-4xl px-4 sm:px-6 lg:px-8 print:pt-0 print:pb-0">
-                {/* Non-Printable Header */}
-                <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 print:hidden">
-                    <div>
-                        <h2 className="text-2xl font-display font-black text-slate-800">Pembayaran Berhasil!</h2>
-                        <p className="text-slate-500 font-medium">Struk pembayaran Anda telah diterbitkan.</p>
-                    </div>
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => window.print()}
-                            className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-blue-700 transition-all flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            Cetak Struk
-                        </button>
-                        <Link
-                            to="/history"
-                            className="px-6 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-sm shadow-sm hover:bg-slate-50 transition-all"
-                        >
-                            Lihat Tiket Saya &rarr;
-                        </Link>
-                    </div>
-                </div>
+            <div className="print:hidden">
+                <PageHero
+                    eyebrow="Payment Receipt"
+                    title="Pembayaran Berhasil"
+                    description="Struk pembayaran sudah siap. Tampilan ini juga sudah disamakan dengan bahasa visual TIX ID yang baru."
+                    actions={
+                        <>
+                            <button type="button" onClick={() => window.print()} className="tix-pill-button px-7 py-4 text-sm">
+                                Cetak Struk
+                            </button>
+                            <Link to="/history" className="cyber-btn rounded-2xl border border-[rgba(13,43,87,0.10)] bg-white px-6 py-4 text-sm font-extrabold uppercase tracking-[0.12em] text-[var(--brand-navy)]">
+                                Tiket Saya
+                            </Link>
+                        </>
+                    }
+                />
+            </div>
 
-                {/* The Printable Receipt (Struk) */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white border border-slate-200 shadow-2xl rounded-[2rem] overflow-hidden print:shadow-none print:border-none print:rounded-none"
-                >
-                    {/* Invoice Header */}
-                    <div className="p-8 sm:p-12 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-50/50">
-                        <div>
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center text-white font-black text-sm">B</div>
-                                <span className="font-black text-xl tracking-tight text-slate-900 uppercase">BANGSA <span className="text-primary-600">TIX.ID</span></span>
+            <div className="tix-container pb-20 print:w-full print:max-w-none print:px-0 print:pb-0">
+                <FlatCard className="mt-12 overflow-hidden print:mt-0 print:rounded-none print:border-none print:shadow-none">
+                    <div className="border-b border-[rgba(13,43,87,0.08)] bg-[rgba(13,43,87,0.03)] px-8 py-8 sm:px-12 print:bg-white">
+                        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <div className="tix-brand text-[2.8rem] leading-none">
+                                    TIX<span className="tix-brand-mark" />ID
+                                </div>
+                                <p className="mt-3 text-xs font-extrabold uppercase tracking-[0.24em] text-[var(--brand-gold)]">
+                                    Official Payment Receipt
+                                </p>
                             </div>
-                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-none">Official Payment Receipt</p>
-                        </div>
-                        <div className="text-left md:text-right">
-                            <p className="text-slate-400 text-[10px] font-black uppercase tracking-wider mb-1">Receipt Number</p>
-                            <p className="text-xl font-mono font-bold text-slate-900">#INV-{transaction.id}-{new Date(transaction.created_at).getTime().toString().slice(-4)}</p>
+                            <div className="md:text-right">
+                                <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                                    Receipt Number
+                                </p>
+                                <p className="mt-2 text-xl font-extrabold text-[var(--brand-navy)]">
+                                    INV-{transaction.id}-{new Date(transaction.created_at).getTime().toString().slice(-4)}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="p-8 sm:p-12">
-                        {/* Transaction Metadata */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-                            <div>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Ditujukan Untuk</p>
-                                <p className="font-bold text-slate-900">{transaction.user?.name || 'Customer'}</p>
-                                <p className="text-sm text-slate-500 truncate">{transaction.user?.email}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Tanggal</p>
-                                <p className="font-bold text-slate-900">{new Date(transaction.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                                <p className="text-sm text-slate-500">{new Date(transaction.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Status</p>
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                    PAID SUCCESS
-                                </span>
-                            </div>
-                            <div>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Metode Bayar</p>
-                                <p className="font-bold text-slate-900 uppercase">{transaction.payment_method_code || 'Midtrans Online'}</p>
-                            </div>
+                    <div className="grid gap-10 px-8 py-8 sm:px-12 sm:py-12">
+                        <div className="grid gap-5 md:grid-cols-4">
+                            <MetaBlock label="Ditujukan Untuk" value={transaction.user?.name || 'Customer'} subvalue={transaction.user?.email} />
+                            <MetaBlock label="Tanggal" value={new Date(transaction.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} subvalue={new Date(transaction.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} />
+                            <MetaBlock label="Status" value="Paid Success" />
+                            <MetaBlock label="Metode Bayar" value={(transaction.payment_method_code || 'midtrans').toUpperCase()} />
                         </div>
 
-                        {/* Order Details Table */}
-                        <div className="overflow-hidden border border-slate-200 rounded-2xl mb-12">
-                            <table className="w-full text-left border-collapse">
+                        <div className="overflow-hidden rounded-2xl border border-[rgba(13,43,87,0.08)]">
+                            <table className="w-full border-collapse text-left">
                                 <thead>
-                                    <tr className="bg-slate-50 border-b border-slate-200">
-                                        <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Detail Item</th>
-                                        <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-center">Harga</th>
-                                        <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-center">Jumlah</th>
-                                        <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">Subtotal</th>
+                                    <tr className="bg-[rgba(13,43,87,0.03)]">
+                                        <th className="px-6 py-4 text-[0.7rem] font-extrabold uppercase tracking-[0.18em] text-[var(--text-muted)]">Detail Item</th>
+                                        <th className="px-6 py-4 text-center text-[0.7rem] font-extrabold uppercase tracking-[0.18em] text-[var(--text-muted)]">Harga</th>
+                                        <th className="px-6 py-4 text-center text-[0.7rem] font-extrabold uppercase tracking-[0.18em] text-[var(--text-muted)]">Jumlah</th>
+                                        <th className="px-6 py-4 text-right text-[0.7rem] font-extrabold uppercase tracking-[0.18em] text-[var(--text-muted)]">Subtotal</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    <tr>
+                                <tbody>
+                                    <tr className="border-t border-[rgba(13,43,87,0.08)]">
                                         <td className="px-6 py-6">
-                                            <p className="font-bold text-slate-900 mb-1">{transaction.ticket?.title}</p>
-                                            <p className="text-xs text-slate-400">Event Date: {new Date(transaction.ticket?.event_date).toLocaleDateString('id-ID', { dateStyle: 'medium' })}</p>
+                                            <p className="font-extrabold text-[var(--brand-navy)]">{transaction.ticket?.title}</p>
+                                            <p className="mt-1 text-sm text-[var(--text-muted)]">
+                                                Event Date: {new Date(transaction.ticket?.event_date).toLocaleDateString('id-ID', { dateStyle: 'medium' })}
+                                            </p>
                                         </td>
-                                        <td className="px-6 py-6 text-center text-slate-600 font-medium text-sm">
+                                        <td className="px-6 py-6 text-center text-sm font-semibold text-[var(--brand-navy)]">
                                             Rp {Number(transaction.ticket?.price).toLocaleString('id-ID')}
                                         </td>
-                                        <td className="px-6 py-6 text-center text-slate-900 font-bold">
+                                        <td className="px-6 py-6 text-center text-sm font-extrabold text-[var(--brand-navy)]">
                                             {transaction.quantity}
                                         </td>
-                                        <td className="px-6 py-6 text-right text-slate-900 font-black">
+                                        <td className="px-6 py-6 text-right text-sm font-extrabold text-[var(--brand-navy)]">
                                             Rp {Number(transaction.total_price).toLocaleString('id-ID')}
                                         </td>
                                     </tr>
@@ -149,52 +118,39 @@ export default function Receipt() {
                             </table>
                         </div>
 
-                        {/* Totals */}
-                        <div className="flex flex-col items-end space-y-3">
-                            <div className="w-full max-w-xs space-y-3">
-                                <div className="flex justify-between text-slate-500 text-sm font-medium">
-                                    <span>Total Tiket</span>
-                                    <span>Rp {Number(transaction.original_price || transaction.total_price).toLocaleString('id-ID')}</span>
-                                </div>
+                        <div className="flex justify-end">
+                            <div className="w-full max-w-sm space-y-3">
+                                <PriceRow label="Total Tiket" value={transaction.original_price || transaction.total_price} />
                                 {Number(transaction.discount_amount) > 0 && (
-                                    <div className="flex justify-between text-emerald-600 text-sm font-medium">
-                                        <span>Diskon Membership</span>
-                                        <span>- Rp {Number(transaction.discount_amount).toLocaleString('id-ID')}</span>
-                                    </div>
+                                    <PriceRow label="Diskon Membership" value={-transaction.discount_amount} highlight />
                                 )}
                                 {Number(transaction.voucher_discount_amount) > 0 && (
-                                    <div className="flex justify-between text-emerald-600 text-sm font-medium">
-                                        <span>Voucher {transaction.voucher_code || ''}</span>
-                                        <span>- Rp {Number(transaction.voucher_discount_amount).toLocaleString('id-ID')}</span>
-                                    </div>
+                                    <PriceRow label={`Voucher ${transaction.voucher_code || ''}`} value={-transaction.voucher_discount_amount} highlight />
                                 )}
-                                <div className="flex justify-between text-slate-500 text-sm font-medium">
-                                    <span>Pajak (0%)</span>
-                                    <span>Rp 0</span>
-                                </div>
-                                <div className="flex justify-between text-slate-500 text-sm font-medium">
-                                    <span>Biaya Layanan</span>
-                                    <span className="text-emerald-600 font-bold uppercase text-[10px]">Lunas</span>
-                                </div>
-                                <div className="pt-4 border-t border-slate-200 flex justify-between items-end">
-                                    <span className="font-black text-slate-900 text-lg uppercase tracking-tight">Total Akhir</span>
-                                    <span className="text-3xl font-display font-black text-primary-600">
-                                        Rp {Number(transaction.total_price).toLocaleString('id-ID')}
-                                    </span>
+                                <PriceRow label="Pajak" value={0} />
+                                <div className="border-t border-[rgba(13,43,87,0.08)] pt-4">
+                                    <div className="flex items-end justify-between">
+                                        <span className="text-lg font-extrabold uppercase tracking-[0.08em] text-[var(--brand-navy)]">
+                                            Total Akhir
+                                        </span>
+                                        <span className="font-sans text-4xl font-extrabold uppercase text-[var(--brand-navy)]">
+                                            Rp {Number(transaction.total_price).toLocaleString('id-ID')}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Footer Disclaimer */}
-                        <div className="mt-16 pt-8 border-t border-slate-100 text-center">
-                            <p className="text-slate-400 text-sm font-medium italic mb-2">Terima kasih telah menggunakan BANGSA TIX.ID</p>
-                            <p className="text-slate-300 text-[10px] leading-relaxed uppercase tracking-wider">
-                                Struk ini adalah bukti pembayaran yang sah. <br />
-                                Harap simpan struk ini sebagai referensi jika terjadi kendala pada tiket Anda.
+                        <div className="border-t border-[rgba(13,43,87,0.08)] pt-8 text-center">
+                            <p className="text-sm italic text-[var(--text-muted)]">
+                                Terima kasih telah menggunakan TIX ID.
+                            </p>
+                            <p className="mt-2 text-[0.7rem] uppercase tracking-[0.16em] text-[var(--text-muted)]">
+                                Simpan struk ini sebagai bukti pembayaran yang sah.
                             </p>
                         </div>
                     </div>
-                </motion.div>
+                </FlatCard>
             </div>
 
             <style dangerouslySetInnerHTML={{
@@ -203,10 +159,32 @@ export default function Receipt() {
                     @page { margin: 1cm; size: auto; }
                     body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                     nav { display: none !important; }
-                    .print-hidden { display: none !important; }
                 }
-            `}} />
+            `,
+            }} />
         </div>
     );
 }
 
+function MetaBlock({ label, value, subvalue }) {
+    return (
+        <div className="rounded-2xl bg-[rgba(13,43,87,0.04)] px-4 py-4">
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">{label}</p>
+            <p className="mt-2 font-extrabold text-[var(--brand-navy)]">{value}</p>
+            {subvalue && <p className="mt-1 text-sm text-[var(--text-muted)]">{subvalue}</p>}
+        </div>
+    );
+}
+
+function PriceRow({ label, value, highlight = false }) {
+    const amount = Number(value || 0);
+    const negative = amount < 0;
+    return (
+        <div className={`flex items-center justify-between text-sm ${highlight ? 'text-[#1c7a50]' : 'text-[var(--text-muted)]'}`}>
+            <span>{label}</span>
+            <span className="font-extrabold text-[var(--brand-navy)]">
+                {negative ? '- ' : ''}Rp {Math.abs(amount).toLocaleString('id-ID')}
+            </span>
+        </div>
+    );
+}
