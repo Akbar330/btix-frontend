@@ -55,8 +55,9 @@ export default function Maintenance() {
                         Kami sedang menyiapkan sesuatu yang lebih baik untuk Anda. <br className="hidden sm:block" /> 
                         Situs akan segera kembali dalam waktu dekat.
                     </p>
+                    
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-md mx-auto">
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-md mx-auto">
                         <div className="p-8 rounded-3xl border-2 border-slate-100 bg-slate-50/50">
                             <span className="block text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">Estimasi Waktu</span>
                             <p className="text-3xl font-black text-slate-900">~ 2 Jam</p>
@@ -65,11 +66,11 @@ export default function Maintenance() {
                             <span className="block text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">Status Sistem</span>
                             <p className="text-3xl font-black text-slate-900 italic">Updating</p>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="mt-24 pt-12 border-t border-slate-100 italic">
                         <p className="text-slate-400 text-sm font-medium"> 
-                            &copy; 2026 Admin Control Center
+                            &copy; 2026 BTIX Control Center
                         </p>
                     </div>
                 </motion.div>
